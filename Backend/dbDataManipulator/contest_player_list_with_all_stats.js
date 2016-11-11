@@ -1,23 +1,18 @@
 const { DK_Table, Curr_Tourn, Players_Stats_Per_Tournament } = require('/Users/brianlong/Fullstack/Draft_Kings/Backend/data_base/index.js');
 
-// we need salary, pga_id, name, and list of stats.
+// NOTE: the point of this file is pull stats for each player
+// that is in the current tournament field from the db for the specified
+// last number of weeks.
 
-// we will use an object with the pga id.
+// the next step is to take those stats and send them to another file.
 
-// Something like this:
-// {pga_id = {
-//   player name: ,
-//   dk_salary: ,
-//   tourns: need to have the stats for that tourn and the date so we can later
-//   figure out how to calculate the stats per week.
-// }
-// }
 
-// first get salary and currTournId from dk-tables.
+// NOTE: lastX is the last number of tournaments to consider for
+// each player.
+const lastX = 2;
 
+// NOTE: this is the main function.
 controller();
-
-
 
 
 function controller () {
@@ -33,38 +28,29 @@ function controller () {
     return pga_id_AND_stats_AND_dk_salary(res);
   })
   .then(res => {
-    // NOTE: return the array of player info for the current tournament.
-    return make_sense_of_player_stats(res);
+    return filter_last_x_tournaments(res, lastX)
   });
-
 }
-function make_sense_of_player_stats (player_arr) {
-  // NOTE: in here we are going through each player's stats and keep only the
-  // meaningful ones because sometimes players show having data for certain stats
-  // when they actually dont.
 
-  // NOTE: player_arr is an array of objects which look like:
-  // {
-  //   pga_id: arr[index].pga_id,
-  //   dk_salary: arr[index].dk_salary,
-  //   player_name: arr[index].name,
-  //   stats: [/*{tournId, stats, date}*/]
-  // }
-  // NOTE: some people might have no stats.
+function filter_last_x_tournaments (arr, lastX) {
+// NOTE: this function return the lastX number of tournaments
+// for each player if the player has more than lastX tournaments.
+// if not, then we do nothing with them.
 
-  for (var i = 0; i < 1; i++) {
-    var current_player = player_arr[i];
-    for (var j = 0; j < current_player.stats.length; j++) {
-      var current_stats = current_player.stats[j].stats[0];
-      console.log(current_stats);
+  console.log('arr ', arr);
+  arr.forEach(player => {
+    var tourn_stats = player.stats;
+    if (tourn_stats.length > lastX) {
+      tourn_stats.sort((a, b) => -1 * (a.date - b.date));
+      player.stats = tourn_stats.slice(0, lastX);
     }
-  }
-
+  });
+  return arr;
 }
 
 function pga_id_AND_stats_AND_dk_salary (arr) {
   // NOTE: the point of this function is to receive an arry of players with
-  // a pga id and query from the db to get all the stats we have for this certain player.
+  // a pga id and query from the db to get all the stats we have for this player.
 
   var statsAndNameArr = [];
   var newArr = [];
@@ -104,7 +90,7 @@ function pga_id_AND_stats_AND_dk_salary (arr) {
         // response array to pick out their stats and add them to the return obj.
         retObj.stats.push({
           tournament_id: tourn.dataValues.tournament_id,
-          date: tourn.dataValues.createdAt,
+          date: tourn.dataValues.tourn_begin_date,
           stats: tourn.dataValues.stats
         });
       });
@@ -149,7 +135,6 @@ function dk_salary_AND_pga_id (arr) {
     });
     return newArr;
   })
-
 }
 
 function dk_salary_AND_currTourn_id () {

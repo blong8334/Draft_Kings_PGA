@@ -1,8 +1,6 @@
 const { Weekly_Field_Stats, Players_Stats_Per_Tournament } = require('../data_base/index');
 const request_promise = require('request-promise');
 
-
-
 // WE USE THIS ONE
 
 // USE THIS ONE BEFORE UPDATE_WEEKLY...
@@ -25,6 +23,7 @@ const id = '047';
 
 // NOTE: this is the date of the tournament.
 // you update this.
+// **** months  go from 0 - 11 ****
 const date = new Date(2016, 10, 3);
 
 // NOTE: this runs the main function.
