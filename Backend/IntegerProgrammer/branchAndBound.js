@@ -11,7 +11,8 @@ findIt(statids, cap, totalPlayerCount)
 function findIt (statids, cap, totalPlayerCount) {
   getPlayerZscores(statids)
     .then(res => {
-      // console.log(res);
+      console.log(res);
+      return;
       var morlanock = getBestLineup(res, cap, totalPlayerCount);
       console.log('This is the best: ', morlanock);
     })
@@ -66,9 +67,7 @@ function getBestLineup (players, cap, totalPlayerCount) {
       stillValid = false;
     } else {
       var remZScore = simplexer(currPlayerList, nextCap, nextRemainingPlayers);
-      // console.log('remZScore: ', remZScore);
       if (! remZScore) {
-        // console.log('in here');
         stillValid = false;
       } else {
         var nextBest = addThePlayerLineup.totalZScore + remZScore;

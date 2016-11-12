@@ -31843,9 +31843,49 @@
 	          { to: '/players' },
 	          _react2.default.createElement(
 	            'button',
-	            { className: 'btn btn-primary btn-lg' },
+	            { className: 'btn btn-secondary btn-lg' },
 	            'Go back to players'
 	          )
+	        ),
+	        _react2.default.createElement(
+	          'button',
+	          { className: 'btn btn-primary btn-lg' },
+	          'Let\'s Optimize!!!'
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            'h4',
+	            null,
+	            'Remaining Players: ',
+	            this.props.lineup.remainingPlayers
+	          ),
+	          _react2.default.createElement(
+	            'h4',
+	            null,
+	            'Remaining Salary: ',
+	            this.props.lineup.remainingSalary
+	          ),
+	          _react2.default.createElement(
+	            'h4',
+	            null,
+	            'Current lineup: '
+	          ),
+	          this.props.lineup.players.length && this.props.lineup.players.map(function (player, index) {
+	            return _react2.default.createElement(
+	              'div',
+	              { key: index },
+	              _react2.default.createElement(
+	                'p',
+	                null,
+	                '$',
+	                player.dk_salary,
+	                ', ',
+	                player.player_name
+	              )
+	            );
+	          })
 	        ),
 	        _react2.default.createElement(
 	          'div',
@@ -31859,7 +31899,14 @@
 	              _react2.default.createElement(
 	                'label',
 	                { className: 'form-check-label' },
-	                _react2.default.createElement('input', { className: 'form-check-input', type: 'checkbox', value: '1' }),
+	                _react2.default.createElement('input', { onChange: function onChange() {
+	                    if (_this2.state[stat]) {
+	                      delete _this2.state[stat];
+	                    } else {
+	                      _this2.state[stat] = 'Yeah';
+	                    }
+	                    console.log(_this2.state);
+	                  }, className: 'form-check-input', type: 'checkbox' }),
 	                _react2.default.createElement(
 	                  'div',
 	                  null,
@@ -31869,20 +31916,23 @@
 	                    _react2.default.createElement(
 	                      'li',
 	                      null,
-	                      'Stat Name: ',
+	                      'Stat Name (',
+	                      index + 1,
+	                      '): ',
 	                      statGuy.stat_name
 	                    ),
 	                    _react2.default.createElement(
 	                      'li',
 	                      null,
-	                      'Player total: ',
+	                      'Total players with this stat: ',
 	                      statGuy.total_in_field
 	                    ),
 	                    _react2.default.createElement(
 	                      'li',
 	                      null,
 	                      'Pct of field: ',
-	                      statGuy.total_in_field / totalPlayers
+	                      Math.round(10000 * (statGuy.total_in_field / totalPlayers)) / 100,
+	                      '%'
 	                    )
 	                  )
 	                )

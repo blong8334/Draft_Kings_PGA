@@ -1,4 +1,4 @@
-const { db, Player_Table, DK_Table, Curr_Tourn } = require('../server/index');
+const { db, Player_Table, DK_Table, Curr_Tourn } = require('../data_base/index');
 const fs = require('fs');
 
 var getPlayerZscores = function (statids) {
