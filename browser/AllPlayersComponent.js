@@ -27,7 +27,7 @@ export default class AllPlayersComponent extends React.Component {
     // then redirect to some page where we see all the stats
     // we are allowed to choose from for that week.
     this.props.reduceStats(this.props.field, this.state.weeks);
-    // browserHistory.push(somewhere to see the stats)
+    browserHistory.push('/stats');
   }
 
   render () {

@@ -68,6 +68,10 @@
 	
 	var _SinglePlayerContainer2 = _interopRequireDefault(_SinglePlayerContainer);
 	
+	var _StatsContainer = __webpack_require__(302);
+	
+	var _StatsContainer2 = _interopRequireDefault(_StatsContainer);
+	
 	var _actionCreators = __webpack_require__(265);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -88,7 +92,8 @@
 	      { path: '/', onEnter: onPlayersEnter },
 	      _react2.default.createElement(_reactRouter.IndexRedirect, { to: '/players' }),
 	      _react2.default.createElement(_reactRouter.Route, { path: 'players', component: _AllPlayersContainer2.default }),
-	      _react2.default.createElement(_reactRouter.Route, { path: 'currentPlayer', component: _SinglePlayerContainer2.default })
+	      _react2.default.createElement(_reactRouter.Route, { path: 'currentPlayer', component: _SinglePlayerContainer2.default }),
+	      _react2.default.createElement(_reactRouter.Route, { path: 'stats', component: _StatsContainer2.default })
 	    )
 	  )
 	), document.getElementById('app'));
@@ -31407,7 +31412,7 @@
 	      // then redirect to some page where we see all the stats
 	      // we are allowed to choose from for that week.
 	      this.props.reduceStats(this.props.field, this.state.weeks);
-	      // browserHistory.push(somewhere to see the stats)
+	      _reactRouter.browserHistory.push('/stats');
 	    }
 	  }, {
 	    key: 'render',
@@ -31749,6 +31754,154 @@
 	}(_react.Component);
 	
 	exports.default = SinglePlayer;
+
+/***/ },
+/* 302 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _reactRedux = __webpack_require__(235);
+	
+	__webpack_require__(265);
+	
+	var _StatsComponent = __webpack_require__(303);
+	
+	var _StatsComponent2 = _interopRequireDefault(_StatsComponent);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {
+	    lineup: state.lineup,
+	    field: state.field,
+	    stats: state.stats
+	  };
+	};
+	
+	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+	  return {};
+	};
+	
+	var componentCreator = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps);
+	var StatsContainer = componentCreator(_StatsComponent2.default);
+	exports.default = StatsContainer;
+
+/***/ },
+/* 303 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRouter = __webpack_require__(34);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var StatsComponent = function (_React$Component) {
+	  _inherits(StatsComponent, _React$Component);
+	
+	  function StatsComponent() {
+	    _classCallCheck(this, StatsComponent);
+	
+	    var _this = _possibleConstructorReturn(this, (StatsComponent.__proto__ || Object.getPrototypeOf(StatsComponent)).call(this));
+	
+	    _this.state = {};
+	    // this.setPlayer = this.setPlayer.bind(this);
+	    return _this;
+	  }
+	
+	  _createClass(StatsComponent, [{
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+	
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          _reactRouter.Link,
+	          { to: '/players' },
+	          _react2.default.createElement(
+	            'button',
+	            { className: 'btn btn-primary btn-lg' },
+	            'Go back to players'
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'form-check' },
+	          Object.keys(this.props.stats) && Object.keys(this.props.stats).map(function (stat, index) {
+	            var totalPlayers = _this2.props.field.length;
+	            var statGuy = _this2.props.stats[stat];
+	            return _react2.default.createElement(
+	              'div',
+	              { key: index },
+	              _react2.default.createElement(
+	                'label',
+	                { className: 'form-check-label' },
+	                _react2.default.createElement('input', { className: 'form-check-input', type: 'checkbox', value: '1' }),
+	                _react2.default.createElement(
+	                  'div',
+	                  null,
+	                  _react2.default.createElement(
+	                    'ul',
+	                    null,
+	                    _react2.default.createElement(
+	                      'li',
+	                      null,
+	                      'Stat Name: ',
+	                      statGuy.stat_name
+	                    ),
+	                    _react2.default.createElement(
+	                      'li',
+	                      null,
+	                      'Player total: ',
+	                      statGuy.total_in_field
+	                    ),
+	                    _react2.default.createElement(
+	                      'li',
+	                      null,
+	                      'Pct of field: ',
+	                      statGuy.total_in_field / totalPlayers
+	                    )
+	                  )
+	                )
+	              )
+	            );
+	          })
+	        )
+	      );
+	    }
+	  }]);
+	
+	  return StatsComponent;
+	}(_react2.default.Component);
+	
+	// From here the link will change the state of the current player to whichever player is clicked
+	// display the new page with the players tournament info and their stats.
+	
+	
+	exports.default = StatsComponent;
 
 /***/ }
 /******/ ]);

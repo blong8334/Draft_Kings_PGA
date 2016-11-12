@@ -8,6 +8,8 @@ import store from './store'
 
 import AllPlayersContainer from './AllPlayersContainer';
 import SinglePlayerContainer from './SinglePlayerContainer';
+import StatsContainer from './StatsContainer';
+
 import { loadPlayersFromServer } from './action-creators';
 
 const onPlayersEnter = function () {
@@ -22,6 +24,7 @@ render(
       <IndexRedirect to="/players" />
       <Route path="players" component={AllPlayersContainer} />
       <Route path="currentPlayer" component={SinglePlayerContainer} />
+      <Route path="stats" component={StatsContainer} />
     </Route>
   </Router>
 </Provider>,
