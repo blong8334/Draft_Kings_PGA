@@ -1,14 +1,29 @@
 'use strict';
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-import AllPuppies from './AllPuppies';
+import React from 'react'
+import { Router, Route, IndexRedirect, browserHistory, IndexRoute } from 'react-router'
+import { render } from 'react-dom'
+import { connect, Provider } from 'react-redux'
+import store from './store'
 
-ReactDOM.render(
-  <div className="container flexbox-container">
-    <div className="jumbotron">
-      <AllPuppies />
-    </div>
-  </div>,
-  document.getElementById('app')
+import AllPlayersContainer from './AllPlayersContainer';
+import SinglePlayerContainer from './SinglePlayerContainer';
+import { loadPlayersFromServer } from './action-creators';
+
+const onPlayersEnter = function () {
+  const thunk = loadPlayersFromServer();
+  store.dispatch(thunk);
+}
+
+render(
+  <Provider store={store}>
+    <Router history={browserHistory}>
+      <Route path="/" onEnter={onPlayersEnter}>
+      <IndexRedirect to="/players" />
+      <Route path="players" component={AllPlayersContainer} />
+      <Route path="currentPlayer" component={SinglePlayerContainer} />
+    </Route>
+  </Router>
+</Provider>,
+document.getElementById('app')
 );
