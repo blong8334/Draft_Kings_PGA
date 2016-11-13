@@ -93,7 +93,15 @@ function reduce_all_stats_to_one (arr) {
       // else we are fine, no changes are necessary.
     }
   });
-
+  // arr.forEach(thing => {
+  //   for (var key in thing.players_with_this_stat) {
+  //     if (thing.players_with_this_stat[key].length > 1) {
+  //       console.log(thing[key]);
+  //     }
+  //
+  //   }
+  // })
+  return arr;
 }
 function actually_combine_the_stats (stat_arr) {
   // we need to first figure out how the stat is calculated.
@@ -121,7 +129,7 @@ function actually_combine_the_stats (stat_arr) {
   if (y) {
     return y;
   }
-  console.log('STAT ARR ', stat_arr);
+  // console.log('STAT ARR ', stat_arr);
 
   // NOTE: if the stat is calculated as a total, we need to take
   // the total per round since if some people miss the cut they will have less than
@@ -131,7 +139,7 @@ function actually_combine_the_stats (stat_arr) {
 
   // if the stat is a max, just find the max of all the rounds.
 
-
+  return
 
 
 
