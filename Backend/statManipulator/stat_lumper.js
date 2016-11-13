@@ -64,30 +64,38 @@ function analyze_stats (field) {
 
 function reduce_all_stats_to_one (arr) {
 
-  // NOTE: the purpose of this function is to get all stats for
-  // a certain number of weeks and combine them into one total for the
-  // z score function to make use of.
+  // NOTE: the purpose of this function is to receive an array of stats
+  // to group together into one for each player because players may have more than
+  // one stat considering the multiple tourn selection.
 
-  for (var i = 1; i < 2; i++) {
-    var curr = arr[i];
-    var stats = curr.stats;
+  // arr will be an array of objects of the form:
+  // { stat_name: 'SG: Total',
+  // players_with_this_stat:
+  //  { '12510': [Object],
+  //    '12716': [Object],
+  //    '19846': [Object],
+  //  '01320': [Object] },
+  // total_in_field: 113 } ]
 
-    console.log('PLAYER: ', curr);
+  arr.forEach((statGroup, index) => {
+    // NOTE: this is the individual stat group.
 
-    var updatedStats = {};
+    // NOTE: these are the keys.
+    var stat_name = statGroup.stat_name;
+    var total_in_field = statGroup.total_in_field;
+    var player_stat = statGroup.players_with_this_stat;
 
-    stats.forEach(stat_bank => {
-      console.log(stat_bank.tournament_id);
-      console.log(stat_bank.date);
-      console.log('STATS: ', stat_bank.stats);
-      var combinedStats = actually_combine_the_stats(updatedStats, stat_bank.stats);
-
-    })
-
-  }
+    for (var pga_id in player_stat) {
+      if (player_stat[pga_id].length > 1) {
+        // call the reducer;
+        player_stat[pga_id] = actually_combine_the_stats(player_stat[pga_id]);
+      }
+      // else we are fine, no changes are necessary.
+    }
+  });
 
 }
-function actually_combine_the_stats (combined_stats, stats_arr) {
+function actually_combine_the_stats (stat_arr) {
   // we need to first figure out how the stat is calculated.
   // once we know how it's calculated, add it
 
@@ -96,6 +104,37 @@ function actually_combine_the_stats (combined_stats, stats_arr) {
   //   percentage => uses cValue,
   //   Average,
   //   maximum,
+
+  // NOTE: PCT HANDLER!!!!
+  if (stat_arr[0].cValue) {
+    return pctCalculator(stat_arr);
+  }
+  // console.log(stat_arr);
+  var x = totalChecker(stat_arr);
+  // console.log('x ', x);
+  if (x) {
+    // console.log('x ', x);
+    return x;
+  }
+
+  var y = averageCalculator(stat_arr);
+  if (y) {
+    return y;
+  }
+  console.log('STAT ARR ', stat_arr);
+
+  // NOTE: if the stat is calculated as a total, we need to take
+  // the total per round since if some people miss the cut they will have less than
+  // 4 rounds.
+
+  // if the stat is an average of all round then it doesnt matter, just average everything.
+
+  // if the stat is a max, just find the max of all the rounds.
+
+
+
+
+
 
   // combined stats will be an object where the statId is the key.
 
@@ -109,10 +148,107 @@ function actually_combine_the_stats (combined_stats, stats_arr) {
   // { r: '3', rValue: '30.00', cValue: '' },
   // { r: '4', rValue: '29.00', cValue: '' } ] }
 
-  stats_arr.forEach(stat => {
-    console.log(stat);
-  })
 }
+function averageCalculator (rounds) {
+  var total = 0;
+  var majorTotal = 0;
+  var totalRounds = 0;
+  var base = rounds[0];
+  var averageTotal = 0;
+
+  var toReturn = {
+    statId: base.statId,
+    name: base.name,
+    tValue: '',
+    rank: [],
+  }
+
+  rounds.forEach(round => {
+    toReturn.rank.push({
+      rank: round.rank,
+      value: round.tValue,
+      tourn_id: round.tourn_id
+    });
+    // console.log('ROUND ',round);
+    majorTotal += parseFloat(round.tValue);
+    round.rounds.forEach(rounder => {
+      totalRounds ++;
+      total += parseFloat(rounder.rValue);
+    })
+    averageTotal += total / totalRounds;
+    // console.log('averageTotal ', averageTotal);
+    total = 0;
+    totalRounds = 0;
+  })
+  var zoosky = majorTotal - averageTotal;
+  // console.log('ZOOSKY ', zoosky);
+  if (Math.abs(zoosky) < .2) {
+    // console.log('INSIDE');
+    toReturn.tValue = averageTotal / rounds.length;
+    return toReturn;
+  }
+  return false;
+}
+function totalChecker (rounds) {
+  var total = 0;
+  var majorTotal = 0;
+  var totalRounds = 0;
+  var base = rounds[0];
+  var toReturn = {
+    statId: base.statId,
+    name: base.name,
+    tValue: '',
+    rank: [],
+  }
+
+  rounds.forEach(round => {
+    toReturn.rank.push({
+      rank: round.rank,
+      value: round.tValue,
+      tourn_id: round.tourn_id
+    });
+    majorTotal += parseFloat(round.tValue);
+    round.rounds.forEach(rounder => {
+      totalRounds ++;
+      total += parseFloat(rounder.rValue);
+    })
+  })
+  var zoosky = majorTotal - total;
+  if (zoosky === 0) {
+    toReturn.tValue = total / totalRounds;
+    return toReturn;
+  }
+  return false;
+}
+
+function pctCalculator (rounds) {
+  var numerator = 0;
+  var denominator = 0;
+  var base = rounds[0];
+
+  var toReturn = {
+    statId: base.statId,
+    name: base.name,
+    tValue: '',
+    rank: [],
+  }
+  rounds.forEach(round => {
+    var guy = round.cValue.split('/');
+    numerator += +guy[0];
+    denominator += +guy[1];
+    toReturn.rank.push({
+      rank: round.rank,
+      value: round.cValue,
+      tourn_id: round.tourn_id
+    });
+  })
+  var final = numerator/denominator;
+  toReturn.tValue = final*100;
+  return toReturn;
+}
+
+
 module.exports = {
-  stats_for_last_x_weeks_with_analysis
+  stats_for_last_x_weeks_with_analysis,
+  reduce_all_stats_to_one
 };

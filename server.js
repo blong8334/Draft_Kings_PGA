@@ -4,7 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser')
 const volleyball = require('volleyball');
 const { get_all_stats_for_current_field } = require('./Backend/statManipulator/contest_player_list_with_all_stats');
-const { stats_for_last_x_weeks_with_analysis } = require('./Backend/statManipulator/stat_lumper');
+const { reduce_all_stats_to_one, stats_for_last_x_weeks_with_analysis } = require('./Backend/statManipulator/stat_lumper');
 
 const app = express();
 
@@ -21,6 +21,21 @@ app.get('/currentField', function (req, res) {
       res.json(players);
     })
     .catch(err => console.error(err));
+});
+
+app.post('/combineStats', (req, res, next) => {
+  var stats = req.body.stats;
+  // console.log(stats);
+
+  reduce_all_stats_to_one(stats);
+  res.end();
+  // boil down all stats to one
+
+  // then convert the stats into a format where
+      // the simplexer can work with them.
+
+  // then send the results to the branch and bound.
+
 });
 
 app.post('/reduceStats', (req, res, next) => {

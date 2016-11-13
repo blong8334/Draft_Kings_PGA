@@ -1,6 +1,14 @@
 import axios from 'axios';
 
+
 //******************************************************************************
+export const getTheBest = (arr) => {
+  axios.post('/combineStats', {stats: arr})
+    .then(res => console.log(res))
+    .catch(err => console.error('something is wrong'));
+
+}
+// ******************************************************************************
 export const UPDATE_ANALYZED_STATS = 'UPDATE_ANALYZED_STATS';
 
 export const updateAnalyzedStats = (stats) => {

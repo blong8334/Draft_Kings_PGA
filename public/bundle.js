@@ -28871,7 +28871,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.setCurrentPlayer = exports.SET_CURRENT_PLAYER = exports.loadPlayersFromServer = exports.updateField = exports.UPDATE_FIELD = exports.addToLineup = exports.ADD_TO_LINEUP = exports.reduceFieldStats = exports.updateAnalyzedStats = exports.UPDATE_ANALYZED_STATS = undefined;
+	exports.setCurrentPlayer = exports.SET_CURRENT_PLAYER = exports.loadPlayersFromServer = exports.updateField = exports.UPDATE_FIELD = exports.addToLineup = exports.ADD_TO_LINEUP = exports.reduceFieldStats = exports.updateAnalyzedStats = exports.UPDATE_ANALYZED_STATS = exports.getTheBest = undefined;
 	
 	var _axios = __webpack_require__(266);
 	
@@ -28880,6 +28880,14 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	//******************************************************************************
+	var getTheBest = exports.getTheBest = function getTheBest(arr) {
+	  _axios2.default.post('/combineStats', { stats: arr }).then(function (res) {
+	    return console.log(res);
+	  }).catch(function (err) {
+	    return console.error('something is wrong');
+	  });
+	};
+	// ******************************************************************************
 	var UPDATE_ANALYZED_STATS = exports.UPDATE_ANALYZED_STATS = 'UPDATE_ANALYZED_STATS';
 	
 	var updateAnalyzedStats = exports.updateAnalyzedStats = function updateAnalyzedStats(stats) {
@@ -31767,7 +31775,7 @@
 	
 	var _reactRedux = __webpack_require__(235);
 	
-	__webpack_require__(265);
+	var _actionCreators = __webpack_require__(265);
 	
 	var _StatsComponent = __webpack_require__(303);
 	
@@ -31784,7 +31792,11 @@
 	};
 	
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-	  return {};
+	  return {
+	    getTopLineup: function getTopLineup(arr) {
+	      (0, _actionCreators.getTheBest)(arr);
+	    }
+	  };
 	};
 	
 	var componentCreator = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps);
@@ -31826,11 +31838,38 @@
 	    var _this = _possibleConstructorReturn(this, (StatsComponent.__proto__ || Object.getPrototypeOf(StatsComponent)).call(this));
 	
 	    _this.state = {};
-	    // this.setPlayer = this.setPlayer.bind(this);
+	    _this.getTheBestLineup = _this.getTheBestLineup.bind(_this);
 	    return _this;
 	  }
 	
 	  _createClass(StatsComponent, [{
+	    key: 'getTheBestLineup',
+	    value: function getTheBestLineup() {
+	
+	      if (Object.keys(this.state).length) {
+	        // reduce the stats for the keys to one workable format for the
+	        // z score function.
+	
+	        // need to set up a server post route for the reducer then the branch and bound algo.
+	
+	        // NOTE: we have to use an array because the prissy z score function demands it.
+	        // She's a bitch.
+	        var chosenOnes = [];
+	
+	        for (var keys in this.state) {
+	          console.log(keys);
+	          // add the stats to the chosen Ones arr.
+	          chosenOnes.push(this.props.stats[keys]);
+	        }
+	        console.log('chosenOnes ', chosenOnes);
+	        this.props.getTopLineup(chosenOnes);
+	
+	        // browserHistory.push(some location for the best lineup display.)
+	      } else {
+	        alert("Pick some fucking stats!!!");
+	      }
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _this2 = this;
@@ -31849,7 +31888,9 @@
 	        ),
 	        _react2.default.createElement(
 	          'button',
-	          { className: 'btn btn-primary btn-lg' },
+	          { onClick: function onClick() {
+	              return _this2.getTheBestLineup();
+	            }, className: 'btn btn-primary btn-lg' },
 	          'Let\'s Optimize!!!'
 	        ),
 	        _react2.default.createElement(

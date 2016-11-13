@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import {  } from './action-creators';
+import { getTheBest } from './action-creators';
 import StatsComponent from './StatsComponent';
 
 const mapStateToProps = function (state) {
@@ -11,7 +11,11 @@ const mapStateToProps = function (state) {
 };
 
 const mapDispatchToProps = function (dispatch) {
-  return {};
+  return {
+    getTopLineup: (arr) => {
+      getTheBest(arr);
+    }
+  };
 };
 
 const componentCreator = connect(mapStateToProps, mapDispatchToProps);

@@ -4,7 +4,7 @@ const fs = require('fs');
 var getPlayerZscores = function (statids) {
   return statListForSelectedStats(statids)
   .then(res => {
-
+    console.log(res);
     return DK_Table.findAll()
     .then(resper => {
 
