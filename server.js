@@ -27,9 +27,10 @@ app.post('/combineStats', (req, res, next) => {
   var stats = req.body.stats;
   // console.log(stats);
 
-  reduce_all_stats_to_one(stats);
-  res.end();
   // boil down all stats to one
+  var newStats = reduce_all_stats_to_one(stats);
+  console.log('New Stats: ', newStats);
+  res.end();
 
   // then convert the stats into a format where
       // the simplexer can work with them.

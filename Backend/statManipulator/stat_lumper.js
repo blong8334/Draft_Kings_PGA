@@ -77,6 +77,8 @@ function reduce_all_stats_to_one (arr) {
   //  '01320': [Object] },
   // total_in_field: 113 } ]
 
+  // console.log(arr);
+
   arr.forEach((statGroup, index) => {
     // NOTE: this is the individual stat group.
 
@@ -88,6 +90,7 @@ function reduce_all_stats_to_one (arr) {
     for (var pga_id in player_stat) {
       if (player_stat[pga_id].length > 1) {
         // call the reducer;
+        // console.log('INSIDE');
         player_stat[pga_id] = actually_combine_the_stats(player_stat[pga_id]);
       }
       // else we are fine, no changes are necessary.
@@ -113,8 +116,11 @@ function actually_combine_the_stats (stat_arr) {
   //   Average,
   //   maximum,
 
+  // console.log('inside actually_combine_the_stats');
+
   // NOTE: PCT HANDLER!!!!
   if (stat_arr[0].cValue) {
+    console.log('stat is a percentage');
     return pctCalculator(stat_arr);
   }
   // console.log(stat_arr);
@@ -139,90 +145,99 @@ function actually_combine_the_stats (stat_arr) {
 
   // if the stat is a max, just find the max of all the rounds.
 
-  return
-
-
-
-
-  // combined stats will be an object where the statId is the key.
-
-  // the properties will be:
-  // {
-  // name: 'Putts Per Round',
-  // cValue: '',
-  // rounds:
-  // [ { r: '1', rValue: '35.00', cValue: '' },
-  // { r: '2', rValue: '31.00', cValue: '' },
-  // { r: '3', rValue: '30.00', cValue: '' },
-  // { r: '4', rValue: '29.00', cValue: '' } ] }
+  console.log('some stat is being a brat and is not a total, avg or pct.');
+  return;
 
 }
 function averageCalculator (rounds) {
-  var total = 0;
-  var majorTotal = 0;
-  var totalRounds = 0;
-  var base = rounds[0];
-  var averageTotal = 0;
+  console.log('it is an average apparently ');
+
+  var tempTotal = 0; // NOTE: this will be the placeholder total for the average calculation.
+  // we will reset this after each round.
+  var tempTotalRounds = 0;
+
+  var pgaTotal = 0; // NOTE: this will be the sum of the tValue as we loop through.
+
+  var ourAverageTotal = 0; // NOTE: this will be the running total of the averages we calculate.
+
+  var ourTotal = 0; // NOTE: this will hold the total of everything we calculate so we can return
+  var ourTotalRounds = 0; // NOTE: this is the global total rounds.
+  // the average once we are done.
 
   var toReturn = {
-    statId: base.statId,
-    name: base.name,
+    statId: rounds[0].statId,
+    name: rounds[0].name,
     tValue: '',
     rank: [],
   }
 
-  rounds.forEach(round => {
+  rounds.forEach(tourn => {
+
     toReturn.rank.push({
-      rank: round.rank,
-      value: round.tValue,
-      tourn_id: round.tourn_id
+      rank: tourn.rank,
+      value: tourn.tValue,
+      tourn_id: tourn.tourn_id
     });
-    // console.log('ROUND ',round);
-    majorTotal += parseFloat(round.tValue);
-    round.rounds.forEach(rounder => {
-      totalRounds ++;
-      total += parseFloat(rounder.rValue);
-    })
-    averageTotal += total / totalRounds;
-    // console.log('averageTotal ', averageTotal);
-    total = 0;
-    totalRounds = 0;
-  })
-  var zoosky = majorTotal - averageTotal;
-  // console.log('ZOOSKY ', zoosky);
-  if (Math.abs(zoosky) < .2) {
-    // console.log('INSIDE');
-    toReturn.tValue = averageTotal / rounds.length;
+
+    pgaTotal += parseFloat(tourn.tValue);
+
+    tourn.rounds.forEach(round => {
+      tempTotalRounds ++;
+      tempTotal += parseFloat(round.rValue);
+    });
+
+    ourAverageTotal += tempTotal / tempTotalRounds;
+
+    ourTotal += tempTotal;
+    ourTotalRounds += tempTotalRounds;
+
+    tempTotal = 0;
+    tempTotalRounds = 0;
+
+  });
+
+  var calcDifference = pgaTotal - ourAverageTotal;
+
+  if (Math.abs(calcDifference) < 0.2) {
+    // IDEA: even if this stat is displayed as a total, we want to consider the average
+    // since some players compete in more tournaments than others.  it would skew the calculation
+    // if we were considering totals.  players that compete more often are not necessarily better players.
+    toReturn.tValue = ourTotal / ourTotalRounds;
     return toReturn;
   }
   return false;
 }
 function totalChecker (rounds) {
-  var total = 0;
-  var majorTotal = 0;
-  var totalRounds = 0;
-  var base = rounds[0];
+  var total = 0; // NOTE: this will be the sum of the stats value as we loop through.
+  var majorTotal = 0; // NOTE: this will be the sum of the tValue as we loop through.
+  // we will compare out calculation to this number.
+  var totalRounds = 0; // NOTE: a count of the total rounds for which this player has stats.
   var toReturn = {
-    statId: base.statId,
-    name: base.name,
+    statId: rounds[0].statId,
+    name: rounds[0].name,
     tValue: '',
     rank: [],
   }
 
-  rounds.forEach(round => {
+  rounds.forEach(tourn => {
     toReturn.rank.push({
-      rank: round.rank,
-      value: round.tValue,
-      tourn_id: round.tourn_id
+      rank: tourn.rank,
+      value: tourn.tValue,
+      tourn_id: tourn.tourn_id
     });
-    majorTotal += parseFloat(round.tValue);
-    round.rounds.forEach(rounder => {
+    majorTotal += parseFloat(tourn.tValue);
+    tourn.rounds.forEach(round => {
       totalRounds ++;
-      total += parseFloat(rounder.rValue);
+      total += parseFloat(round.rValue);
     })
   })
-  var zoosky = majorTotal - total;
-  if (zoosky === 0) {
+  var calcDifference = majorTotal - total;
+
+  if (calcDifference === 0) {
+    // IDEA: even if this stat is displayed as a total, we want to consider the average
+    // since some players compete in more tournaments than others.  it would skew the calculation
+    // if we were considering totals.  players that compete more often are not necessarily better players.
+
     toReturn.tValue = total / totalRounds;
     return toReturn;
   }
@@ -230,16 +245,17 @@ function totalChecker (rounds) {
 }
 
 function pctCalculator (rounds) {
+
   var numerator = 0;
   var denominator = 0;
-  var base = rounds[0];
 
   var toReturn = {
-    statId: base.statId,
-    name: base.name,
-    tValue: '',
-    rank: [],
+    statId: rounds[0].statId,
+    name: rounds[0].name, // NOTE: this is the stat name.
+    tValue: '', // NOTE: we are building tValue from the numbers for all the rounds.
+    rank: [], // NOTE: rank is an array of all the rounds that went into the calculation.
   }
+
   rounds.forEach(round => {
     var guy = round.cValue.split('/');
     numerator += +guy[0];
@@ -250,11 +266,11 @@ function pctCalculator (rounds) {
       tourn_id: round.tourn_id
     });
   })
-  var final = numerator/denominator;
-  toReturn.tValue = final*100;
+  var final = numerator / denominator;
+  toReturn.tValue = final * 100;
+  // console.log(toReturn);
   return toReturn;
 }
-
 
 module.exports = {
   stats_for_last_x_weeks_with_analysis,
