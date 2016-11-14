@@ -84,6 +84,7 @@ function reduce_all_stats_to_one (arr) {
 
     // NOTE: these are the keys.
     var stat_name = statGroup.stat_name;
+    console.log(stat_name);
     var total_in_field = statGroup.total_in_field;
     var player_stat = statGroup.players_with_this_stat;
 
@@ -161,8 +162,8 @@ function reduce_all_stats_to_one (arr) {
     // if the stat is an average of all round then it doesnt matter, just average everything.
 
     // if the stat is a max, just find the max of all the rounds.
-
-    console.log('some stat is being a brat and is not a total, avg or pct.');
+    console.log('stat is being a brat and is not a total, avg or pct.');
+    throw new Error('This stat is not correct');
     return;
 
   }

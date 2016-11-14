@@ -28955,6 +28955,7 @@
 	var getTheBest = exports.getTheBest = function getTheBest(arr, players, salaryCap, field) {
 	  return function (dispatch) {
 	    _axios2.default.post('/combineStats', { stats: arr }).then(function (res) {
+	
 	      // NOTE: now res has combined stats into one value
 	      // for the simplexer to work with.  we need to make sure these stats
 	      // are in a format the simplexer can work with.
