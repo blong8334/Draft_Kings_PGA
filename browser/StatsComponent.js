@@ -33,7 +33,7 @@ export default class StatsComponent extends React.Component {
       browserHistory.push('/bestLineup')
 
     } else {
-      alert("Pick some fucking stats!!!");
+      alert("Pick some stats!!!");
     }
   }
 
