@@ -52,7 +52,7 @@ function getPlayerZscores (stats, field) {
     console.log('stdDev ', stdDev);
     var highMx = 1;
     if (betterToBeHigh === undefined) {
-      throw new Error('Something is wrong with this stat')
+      throw new Error('This stat was entered innaccurately by the pga tour, I think.')
     }
     if (! betterToBeHigh) {
       highMx = -1;
