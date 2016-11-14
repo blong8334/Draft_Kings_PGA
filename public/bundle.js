@@ -31987,7 +31987,7 @@
 	        this.props.getTopLineup(chosenOnes, remainingPlayers, remainingSalary, this.props.field);
 	        _reactRouter.browserHistory.push('/bestLineup');
 	      } else {
-	        alert("Pick some fucking stats!!!");
+	        alert("Pick some stats!!!");
 	      }
 	    }
 	  }, {
