@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
-import { RESET_SALARY, UPDATE_TOTAL_SALARY, BEST_LINEUP, UPDATE_ANALYZED_STATS, ADD_TO_LINEUP, UPDATE_FIELD, SET_CURRENT_PLAYER } from './action-creators';
+import { REMOVE_FROM_LINEUP, RESET_SALARY, UPDATE_TOTAL_SALARY, BEST_LINEUP, UPDATE_ANALYZED_STATS, ADD_TO_LINEUP, UPDATE_FIELD, SET_CURRENT_PLAYER } from './action-creators';
 // *^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*
 function totalSalaryReducer(state = 0, action) {
   switch (action.type) {
     case UPDATE_TOTAL_SALARY:
-      return state + action.salary;
-      case RESET_SALARY:
-      return 0;
+    return state + action.salary;
+    case RESET_SALARY:
+    return 0;
     default:
     return state;
   }
@@ -15,19 +15,19 @@ function totalSalaryReducer(state = 0, action) {
 function bestLineupReducer(state = [], action) {
   switch (action.type) {
     case BEST_LINEUP:
-      return action.lineup;
+    return action.lineup;
     default:
-      return state;
+    return state;
   }
 }
 // *^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*
 function statReducer (state = {}, action) {
-    switch (action.type) {
-      case UPDATE_ANALYZED_STATS:
-      return action.stats
-      default:
-      return state;
-    }
+  switch (action.type) {
+    case UPDATE_ANALYZED_STATS:
+    return action.stats
+    default:
+    return state;
+  }
 }
 // *^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*
 var initialLineup = {
@@ -42,8 +42,25 @@ function lineupReducer (state = initialLineup, action) {
       -- state.remainingPlayers;
       state.players.push(action.player);
       return Object.assign({}, state);
+    case REMOVE_FROM_LINEUP:
+      // FIND PLAYER, REMOVE THEM FROM THE LINEUP.
+      // UPDATE SALARAHY AND REMAINING PLAYERS.
+      var playerToRemove = action.player;
+      var indexToRemove = 0;
+
+      for (var i = 0; i < state.players.length; i++) {
+        if (state.players[i].pga_id === action.player.pga_id) {
+          indexToRemove = i; break;
+        }
+      }
+      var front = state.players.slice(0, indexToRemove);
+      var back = state.players.slice(indexToRemove + 1);
+      state.players = front.concat(back);
+      state.remainingPlayers ++;
+      state.remainingSalary += playerToRemove.dk_salary;
+      return Object.assign({}, state);
     default:
-      return state;
+    return state;
   }
 }
 // *^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*

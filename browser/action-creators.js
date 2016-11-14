@@ -71,6 +71,14 @@ export const reduceFieldStats = (field, weeks) => {
   }
 }
 //******************************************************************************
+export const REMOVE_FROM_LINEUP = 'REMOVE_FROM_LINEUP';
+export const removeFromLineup = (player) => {
+  return {
+    type: REMOVE_FROM_LINEUP,
+    player
+  }
+}
+//******************************************************************************
 export const ADD_TO_LINEUP = 'ADD_TO_LINEUP';
 
 export const addToLineup = (player) => {

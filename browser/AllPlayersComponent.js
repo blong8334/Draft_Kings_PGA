@@ -10,6 +10,7 @@ export default class AllPlayersComponent extends React.Component {
     this.setPlayer = this.setPlayer.bind(this);
     this.setWeeks = this.setWeeks.bind(this);
     this.submitChoices = this.submitChoices.bind(this);
+    this.removeFromLineup = this.removeFromLineup.bind(this);
   }
 
   setPlayer (player, numTourns, fieldIndex) {
@@ -29,6 +30,9 @@ export default class AllPlayersComponent extends React.Component {
     this.props.reduceStats(this.props.field, this.state.weeks);
     browserHistory.push('/stats');
   }
+  removeFromLineup (player) {
+    this.props.removeAndUpdateField(player, this.props.field);
+  }
 
   render () {
     return (
@@ -41,46 +45,48 @@ export default class AllPlayersComponent extends React.Component {
             this.props.lineup.players.length && this.props.lineup.players.map((player, index) => {
               return (
                 <div key={index}>
+                  <button onClick={() => this.removeFromLineup(player)} className="list-group-item">
                   <p>${player.dk_salary}, {player.player_name}</p>
-                </div>
-              )
-            })
-          }
-        </div>
-        <div>
-          <h4>Weeks to consider stats for.</h4>
-          <select onChange={this.setWeeks} className="form-control">
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-          </select>
-        </div>
-        <div>
-          <button onClick={this.submitChoices} type="button" className="btn btn-primary btn-lg" >Submit!!</button>
-        </div>
-        <div>
-          <p> </p>
-        </div>
-        <div>
-          {
-            this.props.field.length && this.props.field.map((player, index) => {
-              var numTourns = player.stats.length;
-              var classes = 'list-group-item'
-              return (
-                <div key={index}>
-                  <button onClick={() => {this.setPlayer(player, numTourns, index)}} className={classes}>
-                    <span className="badge">{numTourns}</span>
-                    ${player.dk_salary}, {player.player_name}
-                  </button>
-                </div>
-              )
-            })
-          }
-        </div>
+                </button>
+              </div>
+            )
+          })
+        }
       </div>
-    )
-  }
+      <div>
+        <h4>Weeks to consider stats for.</h4>
+        <select onChange={this.setWeeks} className="form-control">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+        </select>
+      </div>
+      <div>
+        <button onClick={this.submitChoices} type="button" className="btn btn-primary btn-lg" >Submit!!</button>
+      </div>
+      <div>
+        <p> </p>
+      </div>
+      <div>
+        {
+          this.props.field.length && this.props.field.map((player, index) => {
+            var numTourns = player.stats.length;
+            var classes = 'list-group-item'
+            return (
+              <div key={index}>
+                <button onClick={() => {this.setPlayer(player, numTourns, index)}} className={classes}>
+                  <span className="badge">{numTourns}</span>
+                  ${player.dk_salary}, {player.player_name}
+                </button>
+              </div>
+            )
+          })
+        }
+      </div>
+    </div>
+  )
+}
 }
 
 // From here the link will change the state of the current player to whichever player is clicked

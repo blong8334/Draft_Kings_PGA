@@ -28852,6 +28852,23 @@
 	      --state.remainingPlayers;
 	      state.players.push(action.player);
 	      return Object.assign({}, state);
+	    case _actionCreators.REMOVE_FROM_LINEUP:
+	      // FIND PLAYER, REMOVE THEM FROM THE LINEUP.
+	      // UPDATE SALARAHY AND REMAINING PLAYERS.
+	      var playerToRemove = action.player;
+	      var indexToRemove = 0;
+	
+	      for (var i = 0; i < state.players.length; i++) {
+	        if (state.players[i].pga_id === action.player.pga_id) {
+	          indexToRemove = i;break;
+	        }
+	      }
+	      var front = state.players.slice(0, indexToRemove);
+	      var back = state.players.slice(indexToRemove + 1);
+	      state.players = front.concat(back);
+	      state.remainingPlayers++;
+	      state.remainingSalary += playerToRemove.dk_salary;
+	      return Object.assign({}, state);
 	    default:
 	      return state;
 	  }
@@ -28904,7 +28921,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.setCurrentPlayer = exports.SET_CURRENT_PLAYER = exports.loadPlayersFromServer = exports.updateField = exports.UPDATE_FIELD = exports.addToLineup = exports.ADD_TO_LINEUP = exports.reduceFieldStats = exports.updateAnalyzedStats = exports.UPDATE_ANALYZED_STATS = exports.getTheBest = exports.loadTheBest = exports.BEST_LINEUP = exports.updateTotalSalary = exports.UPDATE_TOTAL_SALARY = exports.resetSalary = exports.RESET_SALARY = undefined;
+	exports.setCurrentPlayer = exports.SET_CURRENT_PLAYER = exports.loadPlayersFromServer = exports.updateField = exports.UPDATE_FIELD = exports.addToLineup = exports.ADD_TO_LINEUP = exports.removeFromLineup = exports.REMOVE_FROM_LINEUP = exports.reduceFieldStats = exports.updateAnalyzedStats = exports.UPDATE_ANALYZED_STATS = exports.getTheBest = exports.loadTheBest = exports.BEST_LINEUP = exports.updateTotalSalary = exports.UPDATE_TOTAL_SALARY = exports.resetSalary = exports.RESET_SALARY = undefined;
 	
 	var _axios = __webpack_require__(266);
 	
@@ -28978,6 +28995,14 @@
 	    }).catch(function (err) {
 	      return console.error('Something bad happened.');
 	    });
+	  };
+	};
+	//******************************************************************************
+	var REMOVE_FROM_LINEUP = exports.REMOVE_FROM_LINEUP = 'REMOVE_FROM_LINEUP';
+	var removeFromLineup = exports.removeFromLineup = function removeFromLineup(player) {
+	  return {
+	    type: REMOVE_FROM_LINEUP,
+	    player: player
 	  };
 	};
 	//******************************************************************************
@@ -31421,7 +31446,13 @@
 	    },
 	    reduceStats: function reduceStats(field, weeks) {
 	      dispatch((0, _actionCreators.reduceFieldStats)(field, weeks));
+	    },
+	    removeAndUpdateField: function removeAndUpdateField(player, field) {
+	      dispatch((0, _actionCreators.removeFromLineup)(player));
+	      field.unshift(player);
+	      dispatch((0, _actionCreators.updateField)(field));
 	    }
+	    //REMOVE PLAYER FROM LINEUP AND ADD BACK TO FIELD.
 	  };
 	};
 	
@@ -31469,6 +31500,7 @@
 	    _this.setPlayer = _this.setPlayer.bind(_this);
 	    _this.setWeeks = _this.setWeeks.bind(_this);
 	    _this.submitChoices = _this.submitChoices.bind(_this);
+	    _this.removeFromLineup = _this.removeFromLineup.bind(_this);
 	    return _this;
 	  }
 	
@@ -31494,6 +31526,11 @@
 	      // we are allowed to choose from for that week.
 	      this.props.reduceStats(this.props.field, this.state.weeks);
 	      _reactRouter.browserHistory.push('/stats');
+	    }
+	  }, {
+	    key: 'removeFromLineup',
+	    value: function removeFromLineup(player) {
+	      this.props.removeAndUpdateField(player, this.props.field);
 	    }
 	  }, {
 	    key: 'render',
@@ -31528,12 +31565,18 @@
 	              'div',
 	              { key: index },
 	              _react2.default.createElement(
-	                'p',
-	                null,
-	                '$',
-	                player.dk_salary,
-	                ', ',
-	                player.player_name
+	                'button',
+	                { onClick: function onClick() {
+	                    return _this2.removeFromLineup(player);
+	                  }, className: 'list-group-item' },
+	                _react2.default.createElement(
+	                  'p',
+	                  null,
+	                  '$',
+	                  player.dk_salary,
+	                  ', ',
+	                  player.player_name
+	                )
 	              )
 	            );
 	          })

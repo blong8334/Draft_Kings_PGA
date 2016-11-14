@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { updateTotalSalary, reduceFieldStats, addToLineup, loadPlayers, setCurrentPlayer } from './action-creators';
+import { updateField, removeFromLineup, updateTotalSalary, reduceFieldStats, addToLineup, loadPlayers, setCurrentPlayer } from './action-creators';
 import AllPlayersComponent from './AllPlayersComponent';
 
 const mapStateToProps = function (state) {
@@ -16,7 +16,13 @@ const mapDispatchToProps = function (dispatch) {
     },
     reduceStats: (field, weeks) => {
       dispatch(reduceFieldStats(field, weeks));
+    },
+    removeAndUpdateField: (player, field) => {
+      dispatch(removeFromLineup(player));
+      field.unshift(player);
+      dispatch(updateField(field));
     }
+    //REMOVE PLAYER FROM LINEUP AND ADD BACK TO FIELD.
   };
 };
 
