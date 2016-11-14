@@ -9,6 +9,7 @@ import store from './store'
 import AllPlayersContainer from './AllPlayersContainer';
 import SinglePlayerContainer from './SinglePlayerContainer';
 import StatsContainer from './StatsContainer';
+import BestLineupContainer from './BestLineupContainer';
 
 import { loadPlayersFromServer } from './action-creators';
 
@@ -25,6 +26,7 @@ render(
       <Route path="players" component={AllPlayersContainer} />
       <Route path="currentPlayer" component={SinglePlayerContainer} />
       <Route path="stats" component={StatsContainer} />
+      <Route path="bestLineup" component={BestLineupContainer} />
     </Route>
   </Router>
 </Provider>,

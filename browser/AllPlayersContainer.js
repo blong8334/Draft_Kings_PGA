@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { reduceFieldStats, addToLineup, loadPlayers, setCurrentPlayer } from './action-creators';
+import { updateTotalSalary, reduceFieldStats, addToLineup, loadPlayers, setCurrentPlayer } from './action-creators';
 import AllPlayersComponent from './AllPlayersComponent';
 
 const mapStateToProps = function (state) {

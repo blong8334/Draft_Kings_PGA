@@ -1,11 +1,53 @@
 import axios from 'axios';
-
-
 //******************************************************************************
-export const getTheBest = (arr) => {
-  axios.post('/combineStats', {stats: arr})
-    .then(res => console.log(res))
-    .catch(err => console.error('something is wrong'));
+export const RESET_SALARY = 'RESET_SALARY';
+export const resetSalary = () => {
+  return {
+    type: RESET_SALARY
+  }
+}
+//******************************************************************************
+export const UPDATE_TOTAL_SALARY = 'UPDATE_TOTAL_SALARY';
+export const updateTotalSalary = (salary) => {
+  return {
+    type: UPDATE_TOTAL_SALARY,
+    salary
+  }
+}
+//******************************************************************************
+export const BEST_LINEUP = 'BEST_LINEUP';
+export const loadTheBest = (lineup) => {
+  return {
+    type: BEST_LINEUP,
+    lineup
+  }
+}
+export const getTheBest = (arr, players, salaryCap, field) => {
+  return dispatch => {
+    axios.post('/combineStats', {stats: arr})
+    .then(res => {
+      // NOTE: now res has combined stats into one value
+      // for the simplexer to work with.  we need to make sure these stats
+      // are in a format the simplexer can work with.
+      // console.log('res ', res.data);
+      // console.log('typeof res: ', typeof res.data);
+      // now we call get z scores.
+      return axios.post('/getZscores', {stats: res.data, field})
+    })
+    .then(res => {
+      // then once we get the zscores, we send it to the branch and bound and let him do the rest.
+      var zscoreArr = res.data;
+      // NOW SEND TO THE BRANCH AND BOUND!!!!!!!
+      return axios.post('/branchAndBound', {
+        zscoreArr, players, salaryCap
+      });
+    })
+    .then(res => {
+      dispatch(updateTotalSalary(+res.data.totalSal));
+      dispatch(loadTheBest(res.data));
+    })
+    .catch(err => console.error(err));
+  }
 
 }
 // ******************************************************************************

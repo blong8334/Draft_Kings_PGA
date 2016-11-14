@@ -1,32 +1,8 @@
 const { getPlayerZscores } = require('./playerStatsAndScores');
 const { simplexer } = require('./tableauMaker');
 
-var statids = ['102', '103', '104', '107', '108', '103', '482', '02672'];
-var cap = 50000;
-var totalPlayerCount = 6;
-
-// Initiate the solver.
-findIt(statids, cap, totalPlayerCount)
-
-function findIt (statids, cap, totalPlayerCount) {
-  getPlayerZscores(statids)
-    .then(res => {
-      console.log(res);
-      return;
-      var morlanock = getBestLineup(res, cap, totalPlayerCount);
-      console.log('This is the best: ', morlanock);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
-
 function getBestLineup (players, cap, totalPlayerCount) {
-  var bestLineup = {
-    totalSal: null,
-    totalZScore: null,
-    lineup: []
-  };
+  bestLineup = findFirstBest(players, cap, totalPlayerCount);
   var count = 0;
   var currLineup = {
     totalSal: 0,
@@ -84,3 +60,34 @@ function getBestLineup (players, cap, totalPlayerCount) {
 
   }
 }
+function findFirstBest (players, cap, totalPlayerCount) {
+
+  players.sort((a, b) => {
+    return b.salary - a.salary;
+  });
+  var bestLineup = {
+    totalSal: 0,
+    totalZScore: 0,
+    lineup: []
+  };
+  for (var i = 0; i < players.length; i++) {
+    // console.log('best lineup ', bestLineup);
+
+    if (bestLineup.lineup.length < totalPlayerCount) {
+      bestLineup.lineup.push(players[i]);
+
+      bestLineup.totalSal += players[i].salary;
+      bestLineup.totalZScore += players[i].zscore;
+    }
+    if (bestLineup.lineup.length === totalPlayerCount && bestLineup.totalSal > cap) {
+      var leavingPlayer = bestLineup.lineup.shift();
+      bestLineup.totalSal -= leavingPlayer.salary;
+      bestLineup.totalZScore -= leavingPlayer.zscore;
+    } else if (bestLineup.lineup.length === totalPlayerCount && bestLineup.totalSal <= cap){
+      return bestLineup;
+    }
+  }
+}
+module.exports = {
+  getBestLineup
+};

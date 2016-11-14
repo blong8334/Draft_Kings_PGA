@@ -21,15 +21,16 @@ export default class StatsComponent extends React.Component {
       var chosenOnes = [];
 
       for (var keys in this.state) {
-        console.log(keys);
         // add the stats to the chosen Ones arr.
         chosenOnes.push(this.props.stats[keys]);
 
       }
-      console.log('chosenOnes ', chosenOnes);
-      this.props.getTopLineup(chosenOnes);
+      // console.log('chosenOnes ', chosenOnes);
+      var remainingSalary = this.props.lineup.remainingSalary;
+      var remainingPlayers = this.props.lineup.remainingPlayers;
 
-      // browserHistory.push(some location for the best lineup display.)
+      this.props.getTopLineup(chosenOnes, remainingPlayers, remainingSalary, this.props.field);
+      browserHistory.push('/bestLineup')
 
     } else {
       alert("Pick some fucking stats!!!");

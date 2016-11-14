@@ -25,6 +25,7 @@ export default class SinglePlayer extends Component {
     var remSal = currLineup.remainingSalary - +player.dk_salary > 0;
 
     if (remPlayer && remSal) {
+      this.props.updateSalary(+player.dk_salary);
       this.props.addToLineup(player);
       var frontField = this.props.field.slice(0, this.props.fieldIndex);
       var backField = this.props.field.slice(this.props.fieldIndex + 1);

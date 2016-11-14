@@ -72,6 +72,10 @@
 	
 	var _StatsContainer2 = _interopRequireDefault(_StatsContainer);
 	
+	var _BestLineupContainer = __webpack_require__(304);
+	
+	var _BestLineupContainer2 = _interopRequireDefault(_BestLineupContainer);
+	
 	var _actionCreators = __webpack_require__(265);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -93,7 +97,8 @@
 	      _react2.default.createElement(_reactRouter.IndexRedirect, { to: '/players' }),
 	      _react2.default.createElement(_reactRouter.Route, { path: 'players', component: _AllPlayersContainer2.default }),
 	      _react2.default.createElement(_reactRouter.Route, { path: 'currentPlayer', component: _SinglePlayerContainer2.default }),
-	      _react2.default.createElement(_reactRouter.Route, { path: 'stats', component: _StatsContainer2.default })
+	      _react2.default.createElement(_reactRouter.Route, { path: 'stats', component: _StatsContainer2.default }),
+	      _react2.default.createElement(_reactRouter.Route, { path: 'bestLineup', component: _BestLineupContainer2.default })
 	    )
 	  )
 	), document.getElementById('app'));
@@ -28794,6 +28799,32 @@
 	var _actionCreators = __webpack_require__(265);
 	
 	// *^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*
+	function totalSalaryReducer() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+	  var action = arguments[1];
+	
+	  switch (action.type) {
+	    case _actionCreators.UPDATE_TOTAL_SALARY:
+	      return state + action.salary;
+	    case _actionCreators.RESET_SALARY:
+	      return 0;
+	    default:
+	      return state;
+	  }
+	}
+	// *^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*
+	function bestLineupReducer() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+	  var action = arguments[1];
+	
+	  switch (action.type) {
+	    case _actionCreators.BEST_LINEUP:
+	      return action.lineup;
+	    default:
+	      return state;
+	  }
+	}
+	// *^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*
 	function statReducer() {
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 	  var action = arguments[1];
@@ -28857,7 +28888,9 @@
 	  field: fieldReducer,
 	  player: playerReducer,
 	  lineup: lineupReducer,
-	  stats: statReducer
+	  stats: statReducer,
+	  bestLineup: bestLineupReducer,
+	  salary: totalSalaryReducer
 	});
 	
 	exports.default = rootReducer;
@@ -28871,7 +28904,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.setCurrentPlayer = exports.SET_CURRENT_PLAYER = exports.loadPlayersFromServer = exports.updateField = exports.UPDATE_FIELD = exports.addToLineup = exports.ADD_TO_LINEUP = exports.reduceFieldStats = exports.updateAnalyzedStats = exports.UPDATE_ANALYZED_STATS = exports.getTheBest = undefined;
+	exports.setCurrentPlayer = exports.SET_CURRENT_PLAYER = exports.loadPlayersFromServer = exports.updateField = exports.UPDATE_FIELD = exports.addToLineup = exports.ADD_TO_LINEUP = exports.reduceFieldStats = exports.updateAnalyzedStats = exports.UPDATE_ANALYZED_STATS = exports.getTheBest = exports.loadTheBest = exports.BEST_LINEUP = exports.updateTotalSalary = exports.UPDATE_TOTAL_SALARY = exports.resetSalary = exports.RESET_SALARY = undefined;
 	
 	var _axios = __webpack_require__(266);
 	
@@ -28880,12 +28913,52 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	//******************************************************************************
-	var getTheBest = exports.getTheBest = function getTheBest(arr) {
-	  _axios2.default.post('/combineStats', { stats: arr }).then(function (res) {
-	    return console.log(res);
-	  }).catch(function (err) {
-	    return console.error('something is wrong');
-	  });
+	var RESET_SALARY = exports.RESET_SALARY = 'RESET_SALARY';
+	var resetSalary = exports.resetSalary = function resetSalary() {
+	  return {
+	    type: RESET_SALARY
+	  };
+	};
+	//******************************************************************************
+	var UPDATE_TOTAL_SALARY = exports.UPDATE_TOTAL_SALARY = 'UPDATE_TOTAL_SALARY';
+	var updateTotalSalary = exports.updateTotalSalary = function updateTotalSalary(salary) {
+	  return {
+	    type: UPDATE_TOTAL_SALARY,
+	    salary: salary
+	  };
+	};
+	//******************************************************************************
+	var BEST_LINEUP = exports.BEST_LINEUP = 'BEST_LINEUP';
+	var loadTheBest = exports.loadTheBest = function loadTheBest(lineup) {
+	  return {
+	    type: BEST_LINEUP,
+	    lineup: lineup
+	  };
+	};
+	var getTheBest = exports.getTheBest = function getTheBest(arr, players, salaryCap, field) {
+	  return function (dispatch) {
+	    _axios2.default.post('/combineStats', { stats: arr }).then(function (res) {
+	      // NOTE: now res has combined stats into one value
+	      // for the simplexer to work with.  we need to make sure these stats
+	      // are in a format the simplexer can work with.
+	      // console.log('res ', res.data);
+	      // console.log('typeof res: ', typeof res.data);
+	      // now we call get z scores.
+	      return _axios2.default.post('/getZscores', { stats: res.data, field: field });
+	    }).then(function (res) {
+	      // then once we get the zscores, we send it to the branch and bound and let him do the rest.
+	      var zscoreArr = res.data;
+	      // NOW SEND TO THE BRANCH AND BOUND!!!!!!!
+	      return _axios2.default.post('/branchAndBound', {
+	        zscoreArr: zscoreArr, players: players, salaryCap: salaryCap
+	      });
+	    }).then(function (res) {
+	      dispatch(updateTotalSalary(+res.data.totalSal));
+	      dispatch(loadTheBest(res.data));
+	    }).catch(function (err) {
+	      return console.error(err);
+	    });
+	  };
 	};
 	// ******************************************************************************
 	var UPDATE_ANALYZED_STATS = exports.UPDATE_ANALYZED_STATS = 'UPDATE_ANALYZED_STATS';
@@ -31595,6 +31668,9 @@
 	    },
 	    updateField: function updateField(field) {
 	      dispatch((0, _actionCreators.updateField)(field));
+	    },
+	    updateSalary: function updateSalary(salary) {
+	      dispatch((0, _actionCreators.updateTotalSalary)(salary));
 	    }
 	  };
 	};
@@ -31663,6 +31739,7 @@
 	      var remSal = currLineup.remainingSalary - +player.dk_salary > 0;
 	
 	      if (remPlayer && remSal) {
+	        this.props.updateSalary(+player.dk_salary);
 	        this.props.addToLineup(player);
 	        var frontField = this.props.field.slice(0, this.props.fieldIndex);
 	        var backField = this.props.field.slice(this.props.fieldIndex + 1);
@@ -31793,8 +31870,8 @@
 	
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 	  return {
-	    getTopLineup: function getTopLineup(arr) {
-	      (0, _actionCreators.getTheBest)(arr);
+	    getTopLineup: function getTopLineup(arr, players, salaryCap, field) {
+	      dispatch((0, _actionCreators.getTheBest)(arr, players, salaryCap, field));
 	    }
 	  };
 	};
@@ -31857,14 +31934,15 @@
 	        var chosenOnes = [];
 	
 	        for (var keys in this.state) {
-	          console.log(keys);
 	          // add the stats to the chosen Ones arr.
 	          chosenOnes.push(this.props.stats[keys]);
 	        }
-	        console.log('chosenOnes ', chosenOnes);
-	        this.props.getTopLineup(chosenOnes);
+	        // console.log('chosenOnes ', chosenOnes);
+	        var remainingSalary = this.props.lineup.remainingSalary;
+	        var remainingPlayers = this.props.lineup.remainingPlayers;
 	
-	        // browserHistory.push(some location for the best lineup display.)
+	        this.props.getTopLineup(chosenOnes, remainingPlayers, remainingSalary, this.props.field);
+	        _reactRouter.browserHistory.push('/bestLineup');
 	      } else {
 	        alert("Pick some fucking stats!!!");
 	      }
@@ -31993,6 +32071,185 @@
 	
 	
 	exports.default = StatsComponent;
+
+/***/ },
+/* 304 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _reactRedux = __webpack_require__(235);
+	
+	var _actionCreators = __webpack_require__(265);
+	
+	var _BestLineupComponent = __webpack_require__(305);
+	
+	var _BestLineupComponent2 = _interopRequireDefault(_BestLineupComponent);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {
+	    bestLineup: state.bestLineup,
+	    lineup: state.lineup,
+	    salary: state.salary
+	  };
+	};
+	
+	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+	  return {
+	    resetSalary: function resetSalary() {
+	      dispatch((0, _actionCreators.resetSalary)());
+	    },
+	    loadTheBest: function loadTheBest(arr) {
+	      dispatch((0, _actionCreators.loadTheBest)(arr));
+	    }
+	  };
+	};
+	
+	var componentCreator = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps);
+	var BestLineupContainer = componentCreator(_BestLineupComponent2.default);
+	exports.default = BestLineupContainer;
+
+/***/ },
+/* 305 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRouter = __webpack_require__(34);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var BestLineupComponent = function (_React$Component) {
+	  _inherits(BestLineupComponent, _React$Component);
+	
+	  function BestLineupComponent() {
+	    _classCallCheck(this, BestLineupComponent);
+	
+	    var _this = _possibleConstructorReturn(this, (BestLineupComponent.__proto__ || Object.getPrototypeOf(BestLineupComponent)).call(this));
+	
+	    _this.state = {};
+	    return _this;
+	  }
+	
+	  _createClass(BestLineupComponent, [{
+	    key: 'reset',
+	    value: function reset() {
+	      this.props.resetSalary();
+	      this.props.loadTheBest([]);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+	
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'list-group' },
+	        _react2.default.createElement(
+	          _reactRouter.Link,
+	          { to: '/' },
+	          _react2.default.createElement(
+	            'button',
+	            { onClick: function onClick() {
+	                return _this2.reset();
+	              }, className: 'btn btn-primary btn-lg' },
+	            'Start Over'
+	          )
+	        ),
+	        _react2.default.createElement(
+	          _reactRouter.Link,
+	          { to: '/stats' },
+	          _react2.default.createElement(
+	            'button',
+	            { onClick: function onClick() {
+	                return _this2.reset();
+	              }, className: 'btn btn-primary btn-lg' },
+	            'Go Back To Stats'
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            'h3',
+	            null,
+	            'Total Salary: ',
+	            this.props.salary
+	          ),
+	          _react2.default.createElement(
+	            'h3',
+	            null,
+	            'Your Lineup: '
+	          ),
+	          this.props.lineup.players.length && this.props.lineup.players.map(function (player, index) {
+	            return _react2.default.createElement(
+	              'div',
+	              { key: index },
+	              _react2.default.createElement(
+	                'p',
+	                null,
+	                '$',
+	                player.dk_salary,
+	                ', ',
+	                player.player_name
+	              )
+	            );
+	          })
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            'h3',
+	            null,
+	            'These guys are the best:'
+	          ),
+	          this.props.bestLineup.lineup && this.props.bestLineup.lineup.map(function (player, index) {
+	            var classes = 'list-group-item';
+	            return _react2.default.createElement(
+	              'div',
+	              { key: index },
+	              _react2.default.createElement(
+	                'p',
+	                null,
+	                '$',
+	                player.salary,
+	                ', ',
+	                player.player_name
+	              )
+	            );
+	          })
+	        )
+	      );
+	    }
+	  }]);
+	
+	  return BestLineupComponent;
+	}(_react2.default.Component);
+	
+	exports.default = BestLineupComponent;
 
 /***/ }
 /******/ ]);

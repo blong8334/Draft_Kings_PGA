@@ -12,8 +12,8 @@ const mapStateToProps = function (state) {
 
 const mapDispatchToProps = function (dispatch) {
   return {
-    getTopLineup: (arr) => {
-      getTheBest(arr);
+    getTopLineup: (arr, players, salaryCap, field) => {
+      dispatch(getTheBest(arr, players, salaryCap, field)); 
     }
   };
 };

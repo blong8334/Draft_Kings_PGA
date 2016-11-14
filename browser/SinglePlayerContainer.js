@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { updateField, setCurrentPlayer, addToLineup } from './action-creators';
+import { updateTotalSalary, updateField, setCurrentPlayer, addToLineup } from './action-creators';
 import SinglePlayerComponent from './SinglePlayerComponent';
 
 const mapStateToProps = function (state) {
@@ -21,6 +21,9 @@ const mapDispatchToProps = function (dispatch) {
     },
     updateField: (field) => {
       dispatch(updateField(field))
+    },
+    updateSalary: (salary) => {
+      dispatch(updateTotalSalary(salary));
     }
   };
 };
