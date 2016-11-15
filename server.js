@@ -14,8 +14,8 @@ app.use(volleyball);
 
 app.use(express.static(__dirname));
 
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(bodyParser.json({limit: '5mb'}))
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({limit: '5mb'}));
 
 app.post('/branchAndBound', (req, res, next) => {
   var zscoreArr = req.body.zscoreArr;
