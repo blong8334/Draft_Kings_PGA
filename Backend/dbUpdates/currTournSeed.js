@@ -1,16 +1,17 @@
-const { Curr_Tourn, db } = require('../server/index');
+const { Curr_Tourn, db } = require('../data_base/index');
 const req_prom = require('request-promise');
 
-var url = 'http://www.pgatour.com/data/r/457/field.json';
+
+// NOTE: the current week's tournament id from the pga site.
+const tourn_id = '493';
+
+var url = `http://www.pgatour.com/data/r/${tourn_id}/field.json`;
 
 // THIS FILE POPULATES THE CURR TOURN TABLE FOR THE WEEKS TOURN.
 
 req_prom(url)
   .then(stuff => {
     var players = JSON.parse(stuff);
-    // var players = JSON.parse(players.Players);
-    console.log(players.Tournament.Players);
-
     var bulkArr = [];
     var mootzie = players.Tournament.Players
 
@@ -27,7 +28,7 @@ req_prom(url)
       .then(() => {
         Curr_Tourn.bulkCreate(bulkArr)
           .then(() => {
-            console.log('updated!');
+            console.log('All updated successfully!');
           });
       })
       .catch(err => {

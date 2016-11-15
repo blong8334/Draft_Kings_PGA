@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { db, DK_Table, Curr_Tourn } = require('../server/index');
+const { db, DK_Table, Curr_Tourn } = require('../data_base/index');
 const req_prom = require('request-promise')
 
 fs.readFile('/Users/brianlong/Fullstack/Draft_Kings/Backend/dk_info/DKSalaries.csv', (err, data) => {

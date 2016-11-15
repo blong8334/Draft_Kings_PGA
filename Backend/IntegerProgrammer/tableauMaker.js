@@ -163,7 +163,7 @@ function simplexSolver (tableau) {
     // console.log('exiting row: ', exitingVarRow);
     if (! exitingVarRow) {
       // printTableau(tableau, 'next.txt');
-      console.log('Problem unbounded from above...FUCK!');
+      console.log('Problem unbounded from above!');
       return;
     }
     tableau = rowReducer(tableau, exitingVarRow, enteringVarCol);

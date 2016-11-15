@@ -19,12 +19,15 @@ const request_promise = require('request-promise');
 
 // NOTE: this is the id of the tournament for the current week.
 // you update this.
-const id = '047';
+// _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+const id = '457';
 
 // NOTE: this is the date of the tournament.
 // you update this.
 // **** months  go from 0 - 11 ****
-const date = new Date(2016, 10, 3);
+// NOTE: we enter the date the tournament began.
+// _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+const date = new Date(2016, 10, 10);
 
 // NOTE: this runs the main function.
 controller(id, date);
@@ -109,11 +112,10 @@ function create_tournament_results_by_id (tournament_id) {
 
   var url = `http://www.pgatour.com/data/r/${tournament_id}/player_stats.json`;
 
-  request_promise(url)
+  return request_promise(url)
     .then(stats => {
-      Weekly_Field_Stats.create({tournament_id, stats})
+      return Weekly_Field_Stats.create({tournament_id, stats})
       .then(res => console.log('Ok, it was ok.'));
     })
     .catch(err => console.error('Nope, did not work'));
-    return;
 }
