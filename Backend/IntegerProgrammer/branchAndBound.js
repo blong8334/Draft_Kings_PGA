@@ -45,6 +45,7 @@ function getBestLineup (players, cap, totalPlayerCount) {
     if (nextCap < 0) {
       // The linuep is no longer valid.
       stillValid = false;
+      // Do we have six players?
     } else if (nextRemainingPlayers === 0) {
       // We have a valid lineup.
       // Check if it is better than the current best solution.
