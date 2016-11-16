@@ -125,28 +125,24 @@ function actually_combine_the_stats (stat_arr) {
   //   Total,
   //   percentage => uses cValue,
   //   Average,
-  //   maximum,
+  //   maximum, WE HAVE NOT IMPLEMENTED YET.
 
-  // console.log('inside actually_combine_the_stats');
-
-  // NOTE: PCT HANDLER!!!!
   if (stat_arr[0].cValue) {
     console.log('Stat is a percentage.');
     return pctCalculator(stat_arr);
   }
 
   var x = totalChecker(stat_arr);
-  // console.log('x ', x);
   if (x) {
-    // console.log('x ', x);
+    console.log('Stat is a total.');
     return x;
   }
 
   var y = averageCalculator(stat_arr);
   if (y) {
+    console.log('Stat is an average.');
     return y;
   }
-  // console.log('STAT ARR ', stat_arr);
 
   // NOTE: if the stat is calculated as a total, we need to take
   // the total per round since if some people miss the cut they will have less than
@@ -249,7 +245,7 @@ function totalChecker (rounds) {
   })
   console.log(tournamentValue, total);
   var calcDifference = tournamentValue - total;
-    console.log('CALC DIFFERENCE: ', calcDifference);
+  console.log('CALC DIFFERENCE: ', calcDifference);
   if (calcDifference < 0.2) {
     // IDEA: even if this stat is displayed as a total, we want to consider the average
     // since some players compete in more tournaments than others.  it would skew the calculation
