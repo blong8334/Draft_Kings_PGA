@@ -54,7 +54,7 @@ export default class AllPlayersComponent extends React.Component {
         }
       </div>
       <div>
-        <h4>Weeks to consider stats for.</h4>
+        <h4>How Many Previous Tournaments Should We Consider For Each Player?</h4>
         <select onChange={this.setWeeks} className="form-control">
           <option>1</option>
           <option>2</option>
@@ -64,6 +64,10 @@ export default class AllPlayersComponent extends React.Component {
       </div>
       <div>
         <button onClick={this.submitChoices} type="button" className="btn btn-primary btn-lg" >Submit!!</button>
+        <div></div>
+        <button onClick={() => {
+          this.props.sortFieldBySal(this.props.field)}
+        } type="button" className="btn btn-secondary btn-md" >Sort Players by Salary</button>
       </div>
       <div>
         <p> </p>

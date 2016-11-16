@@ -1,5 +1,16 @@
 import axios from 'axios';
 //******************************************************************************
+// Action creators for sorting the field on the players homepage
+export const sortFieldBySalary = (field) => {
+  field.sort((a, b) => {
+    return (+a.dk_salary - +b.dk_salary) * -1;
+  });
+  return {
+    type: UPDATE_FIELD,
+    field
+  };
+}
+//******************************************************************************
 export const RESET_SALARY = 'RESET_SALARY';
 export const resetSalary = () => {
   return {
