@@ -3,6 +3,7 @@
 const express = require('express');
 const bodyParser = require('body-parser')
 const volleyball = require('volleyball');
+const path = require('path');
 const { get_all_stats_for_current_field } = require('./Backend/statManipulator/contest_player_list_with_all_stats');
 const { reduce_all_stats_to_one, stats_for_last_x_weeks_with_analysis } = require('./Backend/statManipulator/stat_lumper');
 const { getPlayerZscores } = require('./Backend/IntegerProgrammer/playerStatsAndScores');
@@ -59,10 +60,9 @@ app.post('/reduceStats', (req, res, next) => {
   res.json(x);
 
 });
-app.get('/:anything', (req, res, next) => {
-  console.log('Nothing to see here');
-  res.end();
-});
+app.get('/*', function (request, response){
+  response.sendFile(path.resolve('./index.html'));
+})
 
 
 app.listen(3000, function () {

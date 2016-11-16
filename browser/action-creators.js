@@ -1,14 +1,22 @@
 import axios from 'axios';
 //******************************************************************************
 // Action creators for sorting the field on the players homepage
+export const sortFieldByName = (field) => {
+  field.sort((a, b) => {
+    if (a.player_name < b.player_name) {
+      // console.log('inside');
+      return -1;
+    }
+    // console.log('outside');
+    return 1;
+  });
+  return updateField(field);
+}
 export const sortFieldBySalary = (field) => {
   field.sort((a, b) => {
     return (+a.dk_salary - +b.dk_salary) * -1;
   });
-  return {
-    type: UPDATE_FIELD,
-    field
-  };
+  return updateField(field);
 }
 //******************************************************************************
 export const RESET_SALARY = 'RESET_SALARY';

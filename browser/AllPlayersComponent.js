@@ -46,50 +46,57 @@ export default class AllPlayersComponent extends React.Component {
               return (
                 <div key={index}>
                   <button onClick={() => this.removeFromLineup(player)} className="list-group-item">
-                  <p>${player.dk_salary}, {player.player_name}</p>
-                </button>
-              </div>
-            )
-          })
-        }
-      </div>
-      <div>
-        <h4>How Many Previous Tournaments Should We Consider For Each Player?</h4>
-        <select onChange={this.setWeeks} className="form-control">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-        </select>
-      </div>
-      <div>
-        <button onClick={this.submitChoices} type="button" className="btn btn-primary btn-lg" >Submit!!</button>
-        <div></div>
-        <button onClick={() => {
-          this.props.sortFieldBySal(this.props.field)}
+                    <p>${player.dk_salary}, {player.player_name}</p>
+                  </button>
+                </div>
+              )
+            })
+          }
+        </div>
+        <div>
+          <h4>How Many Previous Tournaments Should We Consider For Each Player?</h4>
+          <select onChange={this.setWeeks} className="form-control">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+          </select>
+        </div>
+        <div>
+          <button onClick={this.submitChoices} type="button" className="btn btn-primary btn-lg" >Submit!!</button>
+          <div></div>
+          <button onClick={() => {
+            this.props.sortFieldBySal(this.props.field);
+            this.forceUpdate();
+          }
         } type="button" className="btn btn-secondary btn-md" >Sort Players by Salary</button>
-      </div>
-      <div>
-        <p> </p>
-      </div>
-      <div>
-        {
-          this.props.field.length && this.props.field.map((player, index) => {
-            var numTourns = player.stats.length;
-            var classes = 'list-group-item'
-            return (
-              <div key={index}>
-                <button onClick={() => {this.setPlayer(player, numTourns, index)}} className={classes}>
-                  <span className="badge">{numTourns}</span>
-                  ${player.dk_salary}, {player.player_name}
-                </button>
-              </div>
-            )
-          })
+        <button onClick={() => {
+          this.props.sortFieldByName(this.props.field);
+          this.forceUpdate();
         }
-      </div>
+      } type="button" className="btn btn-secondary btn-md" >Sort Players by Name</button>
     </div>
-  )
+    <div>
+      <p> </p>
+    </div>
+    <div>
+      {
+        this.props.field.length && this.props.field.map((player, index) => {
+          var numTourns = player.stats.length;
+          var classes = 'list-group-item'
+          return (
+            <div key={index}>
+              <button onClick={() => {this.setPlayer(player, numTourns, index)}} className={classes}>
+                <span className="badge">{numTourns}</span>
+                ${player.dk_salary}, {player.player_name}
+              </button>
+            </div>
+          )
+        })
+      }
+    </div>
+  </div>
+)
 }
 }
 

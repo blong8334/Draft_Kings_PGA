@@ -28921,7 +28921,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.setCurrentPlayer = exports.SET_CURRENT_PLAYER = exports.loadPlayersFromServer = exports.updateField = exports.UPDATE_FIELD = exports.addToLineup = exports.ADD_TO_LINEUP = exports.removeFromLineup = exports.REMOVE_FROM_LINEUP = exports.reduceFieldStats = exports.updateAnalyzedStats = exports.UPDATE_ANALYZED_STATS = exports.getTheBest = exports.loadTheBest = exports.BEST_LINEUP = exports.updateTotalSalary = exports.UPDATE_TOTAL_SALARY = exports.resetSalary = exports.RESET_SALARY = exports.sortFieldBySalary = undefined;
+	exports.setCurrentPlayer = exports.SET_CURRENT_PLAYER = exports.loadPlayersFromServer = exports.updateField = exports.UPDATE_FIELD = exports.addToLineup = exports.ADD_TO_LINEUP = exports.removeFromLineup = exports.REMOVE_FROM_LINEUP = exports.reduceFieldStats = exports.updateAnalyzedStats = exports.UPDATE_ANALYZED_STATS = exports.getTheBest = exports.loadTheBest = exports.BEST_LINEUP = exports.updateTotalSalary = exports.UPDATE_TOTAL_SALARY = exports.resetSalary = exports.RESET_SALARY = exports.sortFieldBySalary = exports.sortFieldByName = undefined;
 	
 	var _axios = __webpack_require__(266);
 	
@@ -28931,14 +28931,22 @@
 	
 	//******************************************************************************
 	// Action creators for sorting the field on the players homepage
+	var sortFieldByName = exports.sortFieldByName = function sortFieldByName(field) {
+	  field.sort(function (a, b) {
+	    if (a.player_name < b.player_name) {
+	      // console.log('inside');
+	      return -1;
+	    }
+	    // console.log('outside');
+	    return 1;
+	  });
+	  return updateField(field);
+	};
 	var sortFieldBySalary = exports.sortFieldBySalary = function sortFieldBySalary(field) {
 	  field.sort(function (a, b) {
 	    return (+a.dk_salary - +b.dk_salary) * -1;
 	  });
-	  return {
-	    type: UPDATE_FIELD,
-	    field: field
-	  };
+	  return updateField(field);
 	};
 	//******************************************************************************
 	var RESET_SALARY = exports.RESET_SALARY = 'RESET_SALARY';
@@ -31466,6 +31474,9 @@
 	    },
 	    sortFieldBySal: function sortFieldBySal(field) {
 	      dispatch((0, _actionCreators.sortFieldBySalary)(field));
+	    },
+	    sortFieldByName: function sortFieldByName(field) {
+	      dispatch((0, _actionCreators.sortFieldByName)(field));
 	    }
 	    //REMOVE PLAYER FROM LINEUP AND ADD BACK TO FIELD.
 	  };
@@ -31642,8 +31653,17 @@
 	            'button',
 	            { onClick: function onClick() {
 	                _this2.props.sortFieldBySal(_this2.props.field);
+	                _this2.forceUpdate();
 	              }, type: 'button', className: 'btn btn-secondary btn-md' },
 	            'Sort Players by Salary'
+	          ),
+	          _react2.default.createElement(
+	            'button',
+	            { onClick: function onClick() {
+	                _this2.props.sortFieldByName(_this2.props.field);
+	                _this2.forceUpdate();
+	              }, type: 'button', className: 'btn btn-secondary btn-md' },
+	            'Sort Players by Name'
 	          )
 	        ),
 	        _react2.default.createElement(
