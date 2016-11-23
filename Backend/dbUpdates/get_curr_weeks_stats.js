@@ -16,18 +16,19 @@ const request_promise = require('request-promise');
 // false data where X% of players have a certain stat when in fact they dont have
 // any data for that stat.
 
+// NOTE: Make sure you have the server running before you run this.
 
 // NOTE: this is the id of the tournament for the current week.
 // you update this.
 // _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
-const id = '457';
+const id = '493';
 
 // NOTE: this is the date of the tournament.
 // you update this.
 // **** months  go from 0 - 11 ****
 // NOTE: we enter the date the tournament began.
 // _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
-const date = new Date(2016, 10, 10);
+const date = new Date(2016, 10, 17);
 
 // NOTE: this runs the main function.
 controller(id, date);
