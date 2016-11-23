@@ -1,1 +1,5 @@
 node_modules
+
+# Compiled JS
+public/bundle.js
+public/bundle.js.map
