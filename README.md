@@ -15,6 +15,6 @@ We build the optimal lineup using Binary Integer Programming:
   * Branch and Bound Algorithm
   * Simplex Algorithm
 
-NOTE: The above methods and algorithm are implemented in Javscript.
+NOTE: The above methods and algorithms are implemented in Javscript.
 
 Have fun, enjoy.
