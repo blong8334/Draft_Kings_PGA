@@ -35,9 +35,9 @@ create_or_update_season_stats_in_db_table () {
 // If the year is 2016, we know they don't exist already so create them.
 // If the year is 2017 check if they exist to know if we should create or not.
 
-  var players_with_seasons_stats = request_season_stats_from_pga_site();
+  let players_with_seasons_stats = request_season_stats_from_pga_site();
   // players_with_seasons_stats is a Promise array of objects which look like:
-  // var player_with_season_stats = {
+  // let player_with_season_stats = {
   //   player_name: player.name,
   //   pga_site_id: player.pga_id,
   //   stats_year: year,
@@ -84,7 +84,7 @@ create_or_update_season_stats_in_db_table () {
 }
 
 function request_season_stats_from_pga_site () {
-  var players_who_need_stats = get_player_list_who_need_stats();
+  let players_who_need_stats = get_player_list_who_need_stats();
   // players_who_need_stats is an array that contains objects that look like this:
   // {
   //   name: player_info.player_name,
@@ -104,22 +104,22 @@ who dont already have them.
     // Now that all players are resolved, let us request their season stats
     // for the necessary years from the pga site.
 
-    var players_seasons_stats_array = [];
+    let players_seasons_stats_array = [];
 // players_seasons_stats_array will contain the stats to insert into the players_seasons_stats table.
 
-    for (var i = 0; i < players_who_need_stats.length; i++) {
+    for (let i = 0; i < players_who_need_stats.length; i++) {
 // loop throgh each player who needs stats
 
       player = players_who_need_stats[i];
-// set a current player variable so we do not need to type that annoying long
-// variable each time.
+// set a current player letiable so we do not need to type that annoying long
+// letiable each time.
 
       player.missing_stat_years.forEach(year => {
 // Iterate over the seasons for which this player needs stats,
 
-        var url = `http://www.pgatour.com/data/players/${player.pga_id}/${year}results.json`;
+        let url = `http://www.pgatour.com/data/players/${player.pga_id}/${year}results.json`;
 
-        var season_stats = request_promise(url)
+        let season_stats = request_promise(url)
 // request the stats from the pga site then and add the stats to the array to insert into the
         .then(stats => {
 // succesfully hit the url, return the content from the page.
@@ -130,7 +130,7 @@ who dont already have them.
         })
 // build the obj to send to the backend.
 // NOTE season_stats IS STILL IN PROMISE FORM.  WE RESOLVE IT ABOVE.
-        var player_with_season_stats = {
+        let player_with_season_stats = {
           player_name: player.name,
           pga_site_id: player.pga_id,
           stats_year: year,
@@ -170,17 +170,17 @@ function get_player_list_who_need_stats () {
   return Curr_Tourn.findAll() // get everything from the curr tournament table.
   .then(res => {
     const playerS = res;
-    var playersToGetStatsFor = [];
+    let playersToGetStatsFor = [];
     // Everyone gets the current year's stats.
     playersToGetStatsFor = playerS.map(player => {
       // check if 2016 stats exist.
-      var player_info = player.dataValues;
+      let player_info = player.dataValues;
 
       return do_stats_year_exist(player_info.pga_id, 2016)
 // Does the player already have stats in the table for the year 2016?
       .then(res => {
 // We set up the stats object to match the structure of the table in the db.
-        var stats = {
+        let stats = {
           name: player_info.name,
           pga_id: player_info.pga_id,
           missing_stat_years: [2017] // everyone needs stats for 2017.

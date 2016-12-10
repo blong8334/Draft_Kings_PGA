@@ -3,8 +3,8 @@ const { simplexer } = require('./tableauMaker');
 
 function getBestLineup (players, cap, totalPlayerCount) {
   bestLineup = findFirstBest(players, cap, totalPlayerCount);
-  var count = 0;
-  var currLineup = {
+  let count = 0;
+  let currLineup = {
     totalSal: 0,
     totalZScore: 0,
     lineup: []
@@ -19,9 +19,9 @@ function getBestLineup (players, cap, totalPlayerCount) {
     }
 
     // This is the lineup where we will add the player.
-    var addThePlayerLineup = Object.assign({}, currLineup);
+    let addThePlayerLineup = Object.assign({}, currLineup);
     // Get the next player
-    var nextPlayer = currPlayerList.shift();
+    let nextPlayer = currPlayerList.shift();
 
     // Copy the current lineup to the new lineup.
     addThePlayerLineup.lineup = currLineup.lineup.slice();
@@ -32,14 +32,14 @@ function getBestLineup (players, cap, totalPlayerCount) {
     // Update total lineup value
     addThePlayerLineup.totalZScore += +nextPlayer.zscore;
 
-    var copiedPlayerList = currPlayerList.slice();
+    let copiedPlayerList = currPlayerList.slice();
     // Update the new salary cap for the added player lineup.
-    var nextCap = currCap - nextPlayer.salary;
+    let nextCap = currCap - nextPlayer.salary;
     // Update the remaining players needed to fill our lineup.
-    var nextRemainingPlayers = remainingPlayers - 1;
+    let nextRemainingPlayers = remainingPlayers - 1;
 
     // Check if the new lineup is still valid.
-    var stillValid = true;
+    let stillValid = true;
 
     // Have we exceeded the salary cap?
     if (nextCap < 0) {
@@ -59,13 +59,13 @@ function getBestLineup (players, cap, totalPlayerCount) {
       stillValid = false;
     } else {
       // Check if the 'relaxed' solution to the current problem + the current value is better than the best.
-      var remZScore = simplexer(currPlayerList, nextCap, nextRemainingPlayers);
+      let remZScore = simplexer(currPlayerList, nextCap, nextRemainingPlayers);
       if (! remZScore) {
         // If the problem is unfeasible, we are done with it.
         stillValid = false;
       } else {
         // The value of the current lineup's score + the relaxed solution's score.
-        var nextBest = addThePlayerLineup.totalZScore + remZScore;
+        let nextBest = addThePlayerLineup.totalZScore + remZScore;
         if (nextBest < bestLineup.totalZScore) {
           // nextBest is not better than the current best, there is no point in checking this branch
           // any further.
@@ -87,12 +87,12 @@ function findFirstBest (players, cap, totalPlayerCount) {
   players.sort((a, b) => {
     return b.salary - a.salary;
   });
-  var bestLineup = {
+  let bestLineup = {
     totalSal: 0,
     totalZScore: 0,
     lineup: []
   };
-  for (var i = 0; i < players.length; i++) {
+  for (let i = 0; i < players.length; i++) {
     // console.log('best lineup ', bestLineup);
 
     if (bestLineup.lineup.length < totalPlayerCount) {
@@ -102,7 +102,7 @@ function findFirstBest (players, cap, totalPlayerCount) {
       bestLineup.totalZScore += players[i].zscore;
     }
     if (bestLineup.lineup.length === totalPlayerCount && bestLineup.totalSal > cap) {
-      var leavingPlayer = bestLineup.lineup.shift();
+      let leavingPlayer = bestLineup.lineup.shift();
       bestLineup.totalSal -= leavingPlayer.salary;
       bestLineup.totalZScore -= leavingPlayer.zscore;
     } else if (bestLineup.lineup.length === totalPlayerCount && bestLineup.totalSal <= cap){

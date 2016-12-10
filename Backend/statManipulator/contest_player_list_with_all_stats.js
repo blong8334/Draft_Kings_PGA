@@ -53,7 +53,7 @@ function filter_last_x_tournaments (arr, lastX) {
 // if not, then we do nothing with them.
 
   arr.forEach(player => {
-    var tourn_stats = player.stats;
+    let tourn_stats = player.stats;
     if (tourn_stats.length > lastX) {
       tourn_stats.sort((a, b) => -1 * (a.date - b.date));
       player.stats = tourn_stats.slice(0, lastX);
@@ -66,8 +66,8 @@ function pga_id_AND_stats_AND_dk_salary (arr) {
   // NOTE: the point of this function is to receive an arry of players with
   // a pga id and query from the db to get all the stats we have for this player.
 
-  var statsAndNameArr = [];
-  var newArr = [];
+  let statsAndNameArr = [];
+  let newArr = [];
 
   statsAndNameArr = arr.map(player => {
     // NOTE: map over the arguments array and find player stats
@@ -87,7 +87,7 @@ function pga_id_AND_stats_AND_dk_salary (arr) {
     // the object to return.  this object contains player info and their
     // stats from all past tournament.
     newArr = res.map((player_stats, index) => {
-      var retObj = {
+      let retObj = {
         pga_id: arr[index].pga_id,
         dk_salary: arr[index].dk_salary,
         player_name: arr[index].name,
@@ -122,8 +122,8 @@ function dk_salary_AND_pga_id (arr) {
   // NOTE: It takes an array as an argument that has a currTourn property
   // and a dk_salary property.
 
-  var pgaIdArr = [];
-  var newArr = [];
+  let pgaIdArr = [];
+  let newArr = [];
 
   pgaIdArr = arr.map(player => {
     // NOTE: we map over the array we receive from the previous function.
@@ -142,9 +142,9 @@ function dk_salary_AND_pga_id (arr) {
     // NOTE: map over the db response and pick out the players pga id
     // and their name and build a new object with salary and from the arguments arr.
     newArr = res.map((player, index) => {
-      var pga_id = player.dataValues.pga_id;
-      var dk_salary = arr[index].dk_salary;
-      var name = player.dataValues.name;
+      let pga_id = player.dataValues.pga_id;
+      let dk_salary = arr[index].dk_salary;
+      let name = player.dataValues.name;
       return {pga_id, dk_salary, name};
     });
     return newArr;
@@ -161,7 +161,7 @@ function dk_salary_AND_currTourn_id () {
   .then(res => {
     // we only need to return the dataValues for each row.
     // IDEA: do all the work in here.
-    var playerArr = res.map(player => {
+    let playerArr = res.map(player => {
       return player.dataValues;
     });
     return playerArr;

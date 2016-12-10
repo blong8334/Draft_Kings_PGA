@@ -3,19 +3,20 @@ const req_prom = require('request-promise');
 
 
 // NOTE: the current week's tournament id from the pga site.
-const tourn_id = '493';
+// NOTE: Curr tourn: Hero World Challenge.
+const tourn_id = '478';
 
-var url = `http://www.pgatour.com/data/r/${tourn_id}/field.json`;
+let url = `http://www.pgatour.com/data/r/${tourn_id}/field.json`;
 
 // THIS FILE POPULATES THE CURR TOURN TABLE FOR THE WEEKS TOURN.
 
 req_prom(url)
   .then(stuff => {
-    var players = JSON.parse(stuff);
-    var bulkArr = [];
-    var mootzie = players.Tournament.Players
+    let players = JSON.parse(stuff);
+    let bulkArr = [];
+    let mootzie = players.Tournament.Players
 
-    for (var key in mootzie) {
+    for (let key in mootzie) {
       bulkArr.push({
         name: mootzie[key].PlayerName,
         pga_id: mootzie[key].TournamentPlayerId,

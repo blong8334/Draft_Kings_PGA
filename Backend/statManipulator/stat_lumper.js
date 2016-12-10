@@ -2,7 +2,7 @@ const { get_stats_for_last_x_weeks } = require('./contest_player_list_with_all_s
 
 
 function stats_for_last_x_weeks_with_analysis (field, weeks) {
-  var arr = get_stats_for_last_x_weeks(field, weeks);
+  let arr = get_stats_for_last_x_weeks(field, weeks);
   arr = analyze_stats(arr);
   return arr;
 }
@@ -23,8 +23,8 @@ function analyze_stats (field) {
   // need to loop through each player in field.
   // then loop through each stat array in stats.
   // for each stat check if it exists in the main
-  var total_players_in_field = field.length;
-  var stat_obj = {};
+  let total_players_in_field = field.length;
+  let stat_obj = {};
 
   // NOTE: loop through each player in the field.
   field.forEach(player => {
@@ -39,7 +39,7 @@ function analyze_stats (field) {
 
         if (! stat_obj[indStat.statId]) {
 
-          var players_with_this_stat_obj = {};
+          let players_with_this_stat_obj = {};
           players_with_this_stat_obj[player.pga_id] = [indStat];
 
           stat_obj[indStat.statId] = {
@@ -48,7 +48,7 @@ function analyze_stats (field) {
             total_in_field: 1
           }
         } else {
-          var x = stat_obj[indStat.statId].players_with_this_stat[player.pga_id];
+          let x = stat_obj[indStat.statId].players_with_this_stat[player.pga_id];
           if (x) {
             x.push(indStat);
           } else {
@@ -83,12 +83,12 @@ function reduce_all_stats_to_one (arr) {
     // NOTE: this is the individual stat group.
 
     // NOTE: these are the keys.
-    var stat_name = statGroup.stat_name;
+    let stat_name = statGroup.stat_name;
     console.log('STAT NAME: ', stat_name);
-    var total_in_field = statGroup.total_in_field;
-    var player_stat = statGroup.players_with_this_stat;
+    let total_in_field = statGroup.total_in_field;
+    let player_stat = statGroup.players_with_this_stat;
 
-    for (var pga_id in player_stat) {
+    for (let pga_id in player_stat) {
       // If the players has more than one tournament, we need to combine the stats.
       if (player_stat[pga_id].length > 1) {
         // Send to the combiner
@@ -96,9 +96,9 @@ function reduce_all_stats_to_one (arr) {
 
       } else {
 
-        var rounds = player_stat[pga_id];
+        let rounds = player_stat[pga_id];
 
-        var toReturn = {
+        let toReturn = {
           statId: rounds[0].statId,
           name: rounds[0].name,
           tValue: rounds[0].tValue,
@@ -132,13 +132,13 @@ function actually_combine_the_stats (stat_arr) {
     return pctCalculator(stat_arr);
   }
 
-  var x = totalChecker(stat_arr);
+  let x = totalChecker(stat_arr);
   if (x) {
     console.log('Stat is a total.');
     return x;
   }
 
-  var y = averageCalculator(stat_arr);
+  let y = averageCalculator(stat_arr);
   if (y) {
     console.log('Stat is an average.');
     return y;
@@ -157,19 +157,19 @@ function actually_combine_the_stats (stat_arr) {
 }
 function averageCalculator (rounds) {
 
-  var tempTotal = 0; // NOTE: this will be the placeholder total for the average calculation.
+  let tempTotal = 0; // NOTE: this will be the placeholder total for the average calculation.
   // we will reset this after each round.
-  var tempTotalRounds = 0;
+  let tempTotalRounds = 0;
 
-  var pgaTotal = 0; // NOTE: this will be the sum of the tValue as we loop through.
+  let pgaTotal = 0; // NOTE: this will be the sum of the tValue as we loop through.
 
-  var ourAverageTotal = 0; // NOTE: this will be the running total of the averages we calculate.
+  let ourAverageTotal = 0; // NOTE: this will be the running total of the averages we calculate.
 
-  var ourTotal = 0; // NOTE: this will hold the total of everything we calculate so we can return
-  var ourTotalRounds = 0; // NOTE: this is the global total rounds.
+  let ourTotal = 0; // NOTE: this will hold the total of everything we calculate so we can return
+  let ourTotalRounds = 0; // NOTE: this is the global total rounds.
   // the average once we are done.
 
-  var toReturn = {
+  let toReturn = {
     statId: rounds[0].statId,
     name: rounds[0].name,
     tValue: '',
@@ -203,7 +203,7 @@ function averageCalculator (rounds) {
 
   });
 
-  var calcDifference = pgaTotal - ourAverageTotal;
+  let calcDifference = pgaTotal - ourAverageTotal;
 
   if (Math.abs(calcDifference) < 0.2) {
     // IDEA: even if this stat is displayed as a total, we want to consider the average
@@ -215,11 +215,11 @@ function averageCalculator (rounds) {
   return false;
 }
 function totalChecker (rounds) {
-  var total = 0; // NOTE: this will be the sum of the stats value as we loop through.
-  var tournamentValue = 0; // NOTE: this will be the sum of the tValue as we loop through.
+  let total = 0; // NOTE: this will be the sum of the stats value as we loop through.
+  let tournamentValue = 0; // NOTE: this will be the sum of the tValue as we loop through.
   // we will compare out calculation to this number.
-  var totalRounds = 0; // NOTE: a count of the total rounds for which this player has stats.
-  var toReturn = {
+  let totalRounds = 0; // NOTE: a count of the total rounds for which this player has stats.
+  let toReturn = {
     statId: rounds[0].statId,
     name: rounds[0].name,
     tValue: '',
@@ -244,7 +244,7 @@ function totalChecker (rounds) {
     })
   })
   console.log(tournamentValue, total);
-  var calcDifference = tournamentValue - total;
+  let calcDifference = tournamentValue - total;
   console.log('CALC DIFFERENCE: ', calcDifference);
   if (calcDifference < 0.2) {
     // IDEA: even if this stat is displayed as a total, we want to consider the average
@@ -259,10 +259,10 @@ function totalChecker (rounds) {
 
 function pctCalculator (rounds) {
 
-  var numerator = 0;
-  var denominator = 0;
+  let numerator = 0;
+  let denominator = 0;
 
-  var toReturn = {
+  let toReturn = {
     statId: rounds[0].statId,
     name: rounds[0].name, // NOTE: this is the stat name.
     tValue: '', // NOTE: we are building tValue from the numbers for all the rounds.
@@ -270,7 +270,7 @@ function pctCalculator (rounds) {
   }
 
   rounds.forEach(round => {
-    var guy = round.cValue.split('/');
+    let guy = round.cValue.split('/');
     numerator += +guy[0];
     denominator += +guy[1];
     toReturn.rank.push({
@@ -279,7 +279,7 @@ function pctCalculator (rounds) {
       tourn_id: round.tourn_id
     });
   })
-  var final = numerator / denominator;
+  let final = numerator / denominator;
   toReturn.tValue = final * 100;
   // console.log(toReturn);
   return toReturn;

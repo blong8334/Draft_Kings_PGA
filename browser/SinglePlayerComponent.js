@@ -19,17 +19,17 @@ export default class SinglePlayer extends Component {
   }
 
   addPlayerToLineup (player) {
-    var currLineup = this.props.lineup;
+    let currLineup = this.props.lineup;
 
-    var remPlayer = currLineup.remainingPlayers > 0;
-    var remSal = currLineup.remainingSalary - +player.dk_salary > 0;
+    let remPlayer = currLineup.remainingPlayers > 0;
+    let remSal = currLineup.remainingSalary - +player.dk_salary > 0;
 
     if (remPlayer && remSal) {
       this.props.updateSalary(+player.dk_salary);
       this.props.addToLineup(player);
-      var frontField = this.props.field.slice(0, this.props.fieldIndex);
-      var backField = this.props.field.slice(this.props.fieldIndex + 1);
-      var newField = frontField.concat(backField);
+      let frontField = this.props.field.slice(0, this.props.fieldIndex);
+      let backField = this.props.field.slice(this.props.fieldIndex + 1);
+      let newField = frontField.concat(backField);
       this.props.updateField(newField);
       browserHistory.push('/players');
     }

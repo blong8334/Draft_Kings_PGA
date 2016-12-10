@@ -82,8 +82,8 @@ export default class AllPlayersComponent extends React.Component {
     <div>
       {
         this.props.field.length && this.props.field.map((player, index) => {
-          var numTourns = player.stats.length;
-          var classes = 'list-group-item'
+          let numTourns = player.stats.length;
+          let classes = 'list-group-item'
           return (
             <div key={index}>
               <button onClick={() => {this.setPlayer(player, numTourns, index)}} className={classes}>

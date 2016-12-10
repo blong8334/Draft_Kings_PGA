@@ -30,7 +30,7 @@ function statReducer (state = {}, action) {
   }
 }
 // *^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*
-var initialLineup = {
+let initialLineup = {
   remainingSalary: 50000,
   remainingPlayers: 6,
   players: []
@@ -45,16 +45,16 @@ function lineupReducer (state = initialLineup, action) {
     case REMOVE_FROM_LINEUP:
       // FIND PLAYER, REMOVE THEM FROM THE LINEUP.
       // UPDATE SALARAHY AND REMAINING PLAYERS.
-      var playerToRemove = action.player;
-      var indexToRemove = 0;
+      let playerToRemove = action.player;
+      let indexToRemove = 0;
 
-      for (var i = 0; i < state.players.length; i++) {
+      for (let i = 0; i < state.players.length; i++) {
         if (state.players[i].pga_id === action.player.pga_id) {
           indexToRemove = i; break;
         }
       }
-      var front = state.players.slice(0, indexToRemove);
-      var back = state.players.slice(indexToRemove + 1);
+      let front = state.players.slice(0, indexToRemove);
+      let back = state.players.slice(indexToRemove + 1);
       state.players = front.concat(back);
       state.remainingPlayers ++;
       state.remainingSalary += playerToRemove.dk_salary;

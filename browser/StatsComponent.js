@@ -18,16 +18,16 @@ export default class StatsComponent extends React.Component {
 
       // NOTE: we have to use an array because the prissy z score function demands it.
       // She's a bitch.
-      var chosenOnes = [];
+      let chosenOnes = [];
 
-      for (var keys in this.state) {
+      for (let keys in this.state) {
         // add the stats to the chosen Ones arr.
         chosenOnes.push(this.props.stats[keys]);
 
       }
       // console.log('chosenOnes ', chosenOnes);
-      var remainingSalary = this.props.lineup.remainingSalary;
-      var remainingPlayers = this.props.lineup.remainingPlayers;
+      let remainingSalary = this.props.lineup.remainingSalary;
+      let remainingPlayers = this.props.lineup.remainingPlayers;
 
       this.props.getTopLineup(chosenOnes, remainingPlayers, remainingSalary, this.props.field);
       browserHistory.push('/bestLineup')
@@ -61,8 +61,8 @@ export default class StatsComponent extends React.Component {
       <div className="form-check">
         {
           Object.keys(this.props.stats) && Object.keys(this.props.stats).map((stat, index) => {
-            var totalPlayers = this.props.field.length;
-            var statGuy = this.props.stats[stat];
+            let totalPlayers = this.props.field.length;
+            let statGuy = this.props.stats[stat];
             return (
               <div key={index}>
                 <label className="form-check-label">

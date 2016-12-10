@@ -5,7 +5,7 @@ const req_prom = require('request-promise')
 fs.readFile('/Users/brianlong/Fullstack/Draft_Kings/Backend/dk_info/DKSalaries.csv', (err, data) => {
   if (err) throw err;
 
-  var bulkArr = bulkArrCreator(data);
+  let bulkArr = bulkArrCreator(data);
 
   DK_Table.sync({force: true})
     .then(() => {
@@ -19,9 +19,9 @@ fs.readFile('/Users/brianlong/Fullstack/Draft_Kings/Backend/dk_info/DKSalaries.c
               }
             })
             .then(resp => {
-              // var keepGoing = true;
-              // var breakOut = false;
-              var url = 'http://www.pgatour.com/data/players/'+resp.dataValues.pga_id+'/2016stat.json';
+              // let keepGoing = true;
+              // let breakOut = false;
+              let url = 'http://www.pgatour.com/data/players/'+resp.dataValues.pga_id+'/2016stat.json';
               // while (keepGoing) {
                 // keepGoing = false;
 /*
@@ -59,13 +59,13 @@ fs.readFile('/Users/brianlong/Fullstack/Draft_Kings/Backend/dk_info/DKSalaries.c
 });
 
 function bulkArrCreator (data) {
-  var dkArr =  data.toString().split(',');
+  let dkArr =  data.toString().split(',');
   // 6th element is name
   // 7th is salary.
   // go every fifth el after that for the players.
 
   // let us build the bulkCreate array for the dk players table.
-  var dkBulkArr = [];
+  let dkBulkArr = [];
 
   // split the name on the space.
   // el 0 is first name, the rest is last name.
@@ -73,10 +73,10 @@ function bulkArrCreator (data) {
   // look up name is any-non a-z  chars replaces with ''
   // let us make a beforeCreate hook that insert the pga id into the row.
   // maybe an after create hook to request the stats from pga tour site.
-  var first_name, last_name, dk_salary;
-  var ind = 6;
+  let first_name, last_name, dk_salary;
+  let ind = 6;
   while (dkArr[ind]) {
-    var tempName = dkArr[ind].split(' ');
+    let tempName = dkArr[ind].split(' ');
     last_name = tempName.pop();
     last_name = last_name.slice(0, last_name.length-1);
     first_name = tempName.join(' ').slice(1);

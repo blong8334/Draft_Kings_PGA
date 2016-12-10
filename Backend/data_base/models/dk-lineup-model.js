@@ -21,9 +21,9 @@ const DK_Table = db.define('dk-table', {
 } , {
   hooks: {
     beforeCreate: (user, options) => {
-      var userFirst = user.dataValues.first_name;
-      var userLast = user.dataValues.last_name;
-      var sorted_user = (userFirst+userLast).toLowerCase()
+      let userFirst = user.dataValues.first_name;
+      let userLast = user.dataValues.last_name;
+      let sorted_user = (userFirst+userLast).toLowerCase()
       .replace(/[^a-z]/g, '').split('').sort().join('');
 
       // full name with all a-z chars, sorted.

@@ -38,7 +38,7 @@ export default class BestLineupComponent extends React.Component {
       <h3>These guys are the best:</h3>
       {
         this.props.bestLineup.lineup && this.props.bestLineup.lineup.map((player, index) => {
-          var classes = 'list-group-item'
+          let classes = 'list-group-item'
           return (
             <div key={index}>
               <p>${player.salary}, {player.player_name}</p>

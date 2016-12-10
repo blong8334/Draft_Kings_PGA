@@ -19,17 +19,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({limit: '5mb'}));
 
 app.post('/branchAndBound', (req, res, next) => {
-  var zscoreArr = req.body.zscoreArr;
-  var players = req.body.players;
-  var salaryCap = req.body.salaryCap;
+  let zscoreArr = req.body.zscoreArr;
+  let players = req.body.players;
+  let salaryCap = req.body.salaryCap;
 
-  var best = getBestLineup(zscoreArr, salaryCap, players);
+  let best = getBestLineup(zscoreArr, salaryCap, players);
   res.json(best);
 });
 app.post('/getZscores', (req, res, next) => {
-  var stats = req.body.stats;
-  var field = req.body.field;
-  var zscores = getPlayerZscores(stats, field);
+  let stats = req.body.stats;
+  let field = req.body.field;
+  let zscores = getPlayerZscores(stats, field);
   res.json(zscores);
 });
 
@@ -42,9 +42,9 @@ app.get('/currentField', function (req, res) {
 });
 
 app.post('/combineStats', (req, res, next) => {
-  var stats = req.body.stats;
+  let stats = req.body.stats;
   // boil down all stats to one
-  var newStats = reduce_all_stats_to_one(stats);
+  let newStats = reduce_all_stats_to_one(stats);
 
   res.json(newStats);
 
@@ -52,10 +52,10 @@ app.post('/combineStats', (req, res, next) => {
 
 
 app.post('/reduceStats', (req, res, next) => {
-  var field = req.body.field;
-  var weeks = req.body.weeks;
+  let field = req.body.field;
+  let weeks = req.body.weeks;
   // need to reduce the received stats into the weeks we receive.
-  var x = stats_for_last_x_weeks_with_analysis(field, weeks);
+  let x = stats_for_last_x_weeks_with_analysis(field, weeks);
 
   res.json(x);
 

@@ -27,7 +27,7 @@ function getPlayerZscores (stats, field) {
 
   // NOTE: rank will be used to determine whether a stat is better to be high or low.
 
-  var allPlayerArr = zScoreReturnObjHelper(field);
+  let allPlayerArr = zScoreReturnObjHelper(field);
   // allPlayerArr is an array of objects with these properties:
   //   player_name: player.player_name,
   //   pga_id: player.pga_id,
@@ -39,18 +39,18 @@ function getPlayerZscores (stats, field) {
   // we can hand out z-scores like candies.
   stats.forEach(stat => {
     // NOTE: we are going through each stat the user chose to start building z scores
-    var stat_name = stat.stat_name;
-    var players_with_this_stat = stat.players_with_this_stat;
+    let stat_name = stat.stat_name;
+    let players_with_this_stat = stat.players_with_this_stat;
 
-    var meanAndHighOrLow = meanCalc (players_with_this_stat);
+    let meanAndHighOrLow = meanCalc (players_with_this_stat);
 
-    var mean = meanAndHighOrLow.mean;
-    var betterToBeHigh = meanAndHighOrLow.betterToBeHigh;
+    let mean = meanAndHighOrLow.mean;
+    let betterToBeHigh = meanAndHighOrLow.betterToBeHigh;
     console.log('mean ', mean);
     console.log('betterToBeHigh ', betterToBeHigh);
-    var stdDev = stdDevCalc(players_with_this_stat, mean);
+    let stdDev = stdDevCalc(players_with_this_stat, mean);
     console.log('stdDev ', stdDev);
-    var highMx = 1;
+    let highMx = 1;
     if (betterToBeHigh === undefined) {
       throw new Error('This stat was entered innaccurately by the pga tour, I think.')
     }
@@ -58,19 +58,19 @@ function getPlayerZscores (stats, field) {
       highMx = -1;
     }
 
-    for (var pga_id in players_with_this_stat) {
-      var stat = parseFloat(players_with_this_stat[pga_id].tValue);
+    for (let pga_id in players_with_this_stat) {
+      let stat = parseFloat(players_with_this_stat[pga_id].tValue);
       if (isNaN(stat)) {
         return;
       }
-      var zscore = (stat - mean) / stdDev * highMx;
+      let zscore = (stat - mean) / stdDev * highMx;
       updateZscore(allPlayerArr, zscore, pga_id, players_with_this_stat[pga_id].statId);
     }
   });
   return allPlayerArr;
 }
 function updateZscore (allPlayerArr, zscore, pga_id, statId) {
-  for (var i = 0; i < allPlayerArr.length; i++) {
+  for (let i = 0; i < allPlayerArr.length; i++) {
     if (allPlayerArr[i].pga_id === pga_id) {
       allPlayerArr[i].zscore += zscore;
       allPlayerArr[i].i_had_stats_for.push(statId);
@@ -84,15 +84,15 @@ function stdDevCalc (arr, mean) {
   // rank: Array[1]
   // statId: "101"
   // tValue: "304.7"
-  var total = 0;
-  var count = 0;
-  for (var key in arr) {
-    var value = parseFloat(arr[key].tValue);
+  let total = 0;
+  let count = 0;
+  for (let key in arr) {
+    let value = parseFloat(arr[key].tValue);
     if (isNaN(value)) {
       return;
     }
     count ++;
-    var sqrDiff = Math.pow(value - mean, 2);
+    let sqrDiff = Math.pow(value - mean, 2);
     total += sqrDiff;
   }
   return Math.pow(total/count, 0.5);
@@ -103,22 +103,22 @@ function meanCalc (arr) {
   // rank: Array[1]
   // statId: "101"
   // tValue: "304.7"
-  var total = 0;
-  var betterToBeHigh;
-  var weKnowIfItsBetter = false;
-  var tempRank;
-  var count = 0;
-  var rankObj = {
+  let total = 0;
+  let betterToBeHigh;
+  let weKnowIfItsBetter = false;
+  let tempRank;
+  let count = 0;
+  let rankObj = {
     // tourn_id: {
     //   value: '',
     //   rank: ''
     // }
   };
 
-  for (var key in arr) {
-    var obj = arr[key];
+  for (let key in arr) {
+    let obj = arr[key];
 
-    var value = parseFloat(obj.tValue);
+    let value = parseFloat(obj.tValue);
     if (isNaN(value)) {
       return;
     }
@@ -139,7 +139,7 @@ function meanCalc (arr) {
         if (! rankObj[curr.tourn_id] && curr.rank) {
           // NOTE: if the id doesnt exist in the rankObj and curr.rank is not empty
 
-          var ranker = parseFloat(curr.rank);
+          let ranker = parseFloat(curr.rank);
 
           // NOTE: cause there was a t in the front of the rank.
           if (isNaN(ranker)) {
@@ -153,8 +153,8 @@ function meanCalc (arr) {
           // console.log('rankObj ', rankObj);
 
         } else if (curr.rank) {
-          var currRank = parseFloat(curr.rank);
-          var currValue = parseFloat(curr.value);
+          let currRank = parseFloat(curr.rank);
+          let currValue = parseFloat(curr.value);
           // NOTE: because there is sometimes a t as the first letter when people tie.
           if (isNaN(currRank)) {
             currRank = parseFloat(curr.rank.slice(1));
@@ -166,9 +166,9 @@ function meanCalc (arr) {
 
           if (currValue !== rankObj[curr.tourn_id].value) {
             console.log('inside');
-            var currIsHigherThanRef =  currValue > rankObj[curr.tourn_id].value;
+            let currIsHigherThanRef =  currValue > rankObj[curr.tourn_id].value;
             console.log('curr value higher ref', currIsHigherThanRef);
-            var currRankIsLowerThanRef = currRank < rankObj[curr.tourn_id].rank;
+            let currRankIsLowerThanRef = currRank < rankObj[curr.tourn_id].rank;
             console.log('curr rank lower ref', currRankIsLowerThanRef);
 
             if (currIsHigherThanRef === currRankIsLowerThanRef) {
@@ -182,7 +182,7 @@ function meanCalc (arr) {
       });
     }
   }
-  var mean = total / count;
+  let mean = total / count;
   return {mean, betterToBeHigh};
 }
 function zScoreReturnObjHelper (field) {
@@ -194,7 +194,7 @@ function zScoreReturnObjHelper (field) {
   // pga_id:"10809"
   // player_name:"Furyk, Jim"
   // stats:Array[0]
-  var retArr = field.map(player => {
+  let retArr = field.map(player => {
     return {
       player_name: player.player_name,
       pga_id: player.pga_id,
@@ -213,11 +213,11 @@ module.exports = { getPlayerZscores };
 // function statListForSelectedStats (selectedStats) {
 //   return DK_Table.findAll()
 //   .then(res => {
-//     var builtStatsObj = {noStats: [], statCount: 0};
-//     var playerCount = 0;
+//     let builtStatsObj = {noStats: [], statCount: 0};
+//     let playerCount = 0;
 //
 //     res.forEach(respy => {
-//       var mookie = respy.dataValues;
+//       let mookie = respy.dataValues;
 //       /*
 //       mookie keys:
 //       [ 'id',
@@ -235,9 +235,9 @@ module.exports = { getPlayerZscores };
 //           throw 'No stats';
 //         }
 //
-//         var player = JSON.parse(mookie.stats);
+//         let player = JSON.parse(mookie.stats);
 //         // fs.write(__dirName )
-//         var statsArr = player.plrs[0].years[0].tours[0].statCats
+//         let statsArr = player.plrs[0].years[0].tours[0].statCats
 //         // each el of statsArr is an object with keys catName and then the stats
 //         // stats is an array of objects for the individual stat
 //         /*
@@ -256,7 +256,7 @@ module.exports = { getPlayerZscores };
 //           // console.log(subStatCat);
 //           subStatCat.stats.forEach(stattyBoy => {
 //
-//             var currID = stattyBoy.statID;
+//             let currID = stattyBoy.statID;
 //             // console.log(stattyBoy)
 //
 //             if (selectedStats.indexOf(currID) === -1) {
@@ -309,11 +309,11 @@ module.exports = { getPlayerZscores };
 //   });
 // }
 //
-// var getStats = function () {
+// let getStats = function () {
 //   statList().then(res => {
-//     var totalPlayers = res.totalPlayers;
-//     for (var key in res) {
-//       var curr = res[key];
+//     let totalPlayers = res.totalPlayers;
+//     for (let key in res) {
+//       let curr = res[key];
 //       if (! curr.count) {
 //         continue;
 //       }
@@ -329,10 +329,10 @@ module.exports = { getPlayerZscores };
 // function statList () {
 //   return DK_Table.findAll()
 //   .then(res => {
-//     var totalStatCount = {noStats: [], statCount: 0};
-//     var playerCount = 0;
+//     let totalStatCount = {noStats: [], statCount: 0};
+//     let playerCount = 0;
 //     res.forEach(respy => {
-//       var mookie = respy.dataValues;
+//       let mookie = respy.dataValues;
 //       /*
 //       mookie keys:
 //       [ 'id',
@@ -348,8 +348,8 @@ module.exports = { getPlayerZscores };
 //         if (! mookie.stats) {
 //           throw 'No stats';
 //         }
-//         var player = JSON.parse(mookie.stats);
-//         var statsArr = player.plrs[0].years[0].tours[0].statCats
+//         let player = JSON.parse(mookie.stats);
+//         let statsArr = player.plrs[0].years[0].tours[0].statCats
 //         // each el of statsArr is an object with keys catName and then the stats
 //         // stats is an array of objects for the individual stat
 //         /*

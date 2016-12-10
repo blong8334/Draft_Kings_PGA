@@ -7,12 +7,12 @@ showStats(457);
 
 function showStats (tournament_id) {
 
-  var obj = pullFromTable(tournament_id);
+  let obj = pullFromTable(tournament_id);
 
   obj.then(res => {
-    var allStats = JSON.parse(res);
-    var players = allStats.tournament.players;
-    var tournament_id = allStats.tournament.tournamentNumber;
+    let allStats = JSON.parse(res);
+    let players = allStats.tournament.players;
+    let tournament_id = allStats.tournament.tournamentNumber;
 
     players.forEach(player => {
       Players_Stats_Per_Tournament.create({

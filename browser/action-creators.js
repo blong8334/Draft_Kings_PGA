@@ -56,7 +56,7 @@ export const getTheBest = (arr, players, salaryCap, field) => {
     })
     .then(res => {
       // then once we get the zscores, we send it to the branch and bound and let him do the rest.
-      var zscoreArr = res.data;
+      let zscoreArr = res.data;
       // NOW SEND TO THE BRANCH AND BOUND!!!!!!!
       return axios.post('/branchAndBound', {
         zscoreArr, players, salaryCap
@@ -82,7 +82,7 @@ export const updateAnalyzedStats = (stats) => {
 
 export const reduceFieldStats = (field, weeks) => {
   return dispatch => {
-    var stuff = {field, weeks};
+    let stuff = {field, weeks};
     axios.post('/reduceStats', stuff)
     .then(res => {
       dispatch(updateAnalyzedStats(res.data));

@@ -53,26 +53,26 @@ function create_player_stats_entries_for_tournament (arr, date) {
 // stats for which no data exists.  once we are done doing so we
 // create a new entry in the Players_Stats_Per_Tournament table.
 
-  var tournament = JSON.parse(arr.stats).tournament;
+  let tournament = JSON.parse(arr.stats).tournament;
 // NOTE: this is tournament object.
 
-  var tournament_id = tournament.tournamentNumber;
+  let tournament_id = tournament.tournamentNumber;
 
-  var tourn_begin_date = date;
+  let tourn_begin_date = date;
 // NOTE: we want to keep track of the tournament date
 // so we are able to consider stats from the past X weeks.
 
-  var players = tournament.players;
+  let players = tournament.players;
 // NOTE: players is an array of objects of each player.
 
-  for (var i = 0; i < players.length; i++) {
+  for (let i = 0; i < players.length; i++) {
 // NOTE: go through each player in the array.
-    var player_id = players[i].pid;
-    var player_name = players[i].pn;
-    var stats = players[i].stats;
+    let player_id = players[i].pid;
+    let player_name = players[i].pn;
+    let stats = players[i].stats;
 
 // NOTE: get rid of any stats that dont have data.
-    var non_empty_stats = stats.filter(stat => {
+    let non_empty_stats = stats.filter(stat => {
       if (stat.tValue) {
         return true;
       }
@@ -80,7 +80,7 @@ function create_player_stats_entries_for_tournament (arr, date) {
     });
 
 // NOTE: this is the obj we can send right to the db for creation.
-    var obj_for_db = {
+    let obj_for_db = {
       tournament_id,
       player_id,
       player_name,
@@ -111,7 +111,7 @@ function create_tournament_results_by_id (tournament_id) {
 // pga tour website based on the tournment id it is passed.
 // it then creates the entry in the db for this specific tournament.
 
-  var url = `http://www.pgatour.com/data/r/${tournament_id}/player_stats.json`;
+  let url = `http://www.pgatour.com/data/r/${tournament_id}/player_stats.json`;
 
   return request_promise(url)
     .then(stats => {
