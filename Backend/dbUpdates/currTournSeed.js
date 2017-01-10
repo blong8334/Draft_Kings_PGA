@@ -4,7 +4,7 @@ const req_prom = require('request-promise');
 
 // NOTE: the current week's tournament id from the pga site.
 // NOTE: Curr tourn: Hero World Challenge.
-const tourn_id = '478';
+const tourn_id = '006';
 
 let url = `http://www.pgatour.com/data/r/${tourn_id}/field.json`;
 
