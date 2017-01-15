@@ -1,8 +1,17 @@
 const { getPlayerZscores } = require('./playerStatsAndScores');
 const { simplexer } = require('./tableauMaker');
+let line_queue = [];
+let line_count;
+
+let lineups_len = 15;
 
 function getBestLineup (players, cap, totalPlayerCount) {
   bestLineup = findFirstBest(players, cap, totalPlayerCount);
+  line_queue = [];
+  line_queue.push(Object.assign({}, bestLineup));
+
+  line_count = 1;
+
   let count = 0;
   let currLineup = {
     totalSal: 0,
@@ -10,7 +19,11 @@ function getBestLineup (players, cap, totalPlayerCount) {
     lineup: []
   };
   branchAndBound(players, currLineup, cap, totalPlayerCount);
-  return bestLineup;
+  console.log('*** LINE QUEUE ***');
+  line_queue.forEach(el => {
+    console.log(el);
+  });
+  return line_queue[line_queue.length - 1];
 
   function branchAndBound (currPlayerList, currLineup, currCap, remainingPlayers) {
     if (currPlayerList.length + currLineup.lineup.length < totalPlayerCount) {
@@ -49,11 +62,20 @@ function getBestLineup (players, cap, totalPlayerCount) {
     } else if (nextRemainingPlayers === 0) {
       // We have a valid lineup.
       // Check if it is better than the current best solution.
-      if (addThePlayerLineup.totalZScore > bestLineup.totalZScore) {
+      if (addThePlayerLineup.totalZScore > line_queue[0].totalZScore) {
         // This lineup is better than the current best.
-        console.log("WHOA! You're going to LOVE this lineup! ", addThePlayerLineup);
+        // console.log("WHOA! You're going to LOVE this lineup! ", addThePlayerLineup);
+        console.log(line_count ++ + ': We found a sweet lineup for you');
         // Update the best lineup.
-        bestLineup = Object.assign({}, addThePlayerLineup);
+        // bestLineup = Object.assign({}, addThePlayerLineup);
+        line_queue.push(Object.assign({}, addThePlayerLineup));
+        if (line_queue.length > lineups_len) {
+          line_queue.shift();
+        }
+        line_queue.sort((a, b) => {
+          return a.totalZScore - b.totalZScore;
+        });
+        // Need to sort the queue now.
       }
       // Otherwise we are done with this lineup since it is not better than the best.
       stillValid = false;
@@ -66,7 +88,7 @@ function getBestLineup (players, cap, totalPlayerCount) {
       } else {
         // The value of the current lineup's score + the relaxed solution's score.
         let nextBest = addThePlayerLineup.totalZScore + remZScore;
-        if (nextBest < bestLineup.totalZScore) {
+        if (nextBest < line_queue[0].totalZScore) {
           // nextBest is not better than the current best, there is no point in checking this branch
           // any further.
           stillValid = false;

@@ -8,54 +8,22 @@ fs.readFile('/Users/brianlong/Fullstack/Draft_Kings/Backend/dk_info/DKSalaries.c
   let bulkArr = bulkArrCreator(data);
 
   DK_Table.sync({force: true})
-    .then(() => {
-      bulkArr.forEach(el => {
-        DK_Table.create(el)
-          .then(resp => {
-            console.log('Success!');
-            Curr_Tourn.findOne({
-              where: {
-                id: resp.dataValues.currTournId
-              }
-            })
-            .then(resp => {
-              // let keepGoing = true;
-              // let breakOut = false;
-              let url = 'http://www.pgatour.com/data/players/'+resp.dataValues.pga_id+'/2016stat.json';
-              // while (keepGoing) {
-                // keepGoing = false;
-/*
-                req_prom(url)
-                .then(res => {
-                  DK_Table.update({
-                    stats: res
-                  }, {
-                    where: {
-                      currTournId: resp.dataValues.id
-                    }
-                  })
-                  .then(res => {
-                    console.log('success');
-                  })
-                  .catch(err => {
-                    // if (! breakOut) {
-                    //   console.log('DOOTSY');
-                    //   url = 'http://www.pgatour.com/data/players/'+resp.dataValues.pga_id+'/2016stat.json';
-                    //   breakOut = true;
-                    //   keepGoing = true;
-                    // }
-                    console.error(err);
-                  })
-                })
-*/
-              // }
-            });
-          })
-      });
+  .then(() => {
+    bulkArr.forEach(el => {
+      DK_Table.create(el)
+      .then(resp => {
+        console.log('Success!');
+        Curr_Tourn.findOne({
+          where: {
+            id: resp.dataValues.currTournId
+          }
+        })
+      })
     })
-    .catch(err => {
-      console.error(err);
-    });
+  })
+  .catch(err => {
+    console.error(err);
+  });
 });
 
 function bulkArrCreator (data) {
