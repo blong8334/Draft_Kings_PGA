@@ -3,7 +3,7 @@ const { simplexer } = require('./tableauMaker');
 let line_queue = [];
 let line_count;
 
-let lineups_len = 15;
+let lineups_len = 20;
 
 function getBestLineup (players, cap, totalPlayerCount) {
   bestLineup = findFirstBest(players, cap, totalPlayerCount);
@@ -18,11 +18,12 @@ function getBestLineup (players, cap, totalPlayerCount) {
     totalZScore: 0,
     lineup: []
   };
+  let start = new Date();
   branchAndBound(players, currLineup, cap, totalPlayerCount);
+  let end = new Date();
+  console.log("Program took: ", (end-start)/1000);
   console.log('*** LINE QUEUE ***');
-  line_queue.forEach(el => {
-    console.log(el);
-  });
+  line_queue.forEach(el => console.log(el));
   return line_queue[line_queue.length - 1];
 
   function branchAndBound (currPlayerList, currLineup, currCap, remainingPlayers) {

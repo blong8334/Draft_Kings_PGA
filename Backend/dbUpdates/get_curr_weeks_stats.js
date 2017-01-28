@@ -21,14 +21,14 @@ const request_promise = require('request-promise');
 // NOTE: this is the id of the tournament for the current week.
 // you update this.
 // _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
-const id = '016';
+const id = '002';
 
 // NOTE: this is the date of the tournament.
 // you update this.
 // **** months  go from 0 - 11 ****
 // NOTE: we enter the date the tournament began.
 // _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
-const date = new Date(2017, 0, 4);
+const date = new Date(2017, 0, 19);
 
 // NOTE: this runs the main function.
 controller(id, date);

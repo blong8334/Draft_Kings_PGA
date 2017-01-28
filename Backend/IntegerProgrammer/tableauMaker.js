@@ -140,40 +140,40 @@ function simplexSolver (tableau) {
   // let count = 0;
   // while (true) {
 
-    // console.log('entering!');
-    // let cols = findSolutionCols(tableau);
-    // console.log('length: ', cols.length);
-    // printTableau(tableau, 'previous.txt');
+  // console.log('entering!');
+  // let cols = findSolutionCols(tableau);
+  // console.log('length: ', cols.length);
+  // printTableau(tableau, 'previous.txt');
 
-    count ++;
+  count ++;
 
-    // console.log('count: ', count);
-    // if (count === 15) {
-    //   printTableau(tableau, 'previous.txt');
-    //   // console.log(cols);
-    // }
-    let enteringletCol = enteringCol(tableau);
-    // console.log('entering col: ', enteringletCol);
-    if (! enteringletCol) {
-      // printTableau(tableau, 'next.txt');
-      // console.log('Optimal solution found! Iterations: ', count);
-      return tableau;
-    }
-    let exitingletRow = exitingRow(tableau, enteringletCol);
-    // console.log('exiting row: ', exitingletRow);
-    if (! exitingletRow) {
-      // printTableau(tableau, 'next.txt');
-      console.log('Problem unbounded from above!');
-      return;
-    }
-    tableau = rowReducer(tableau, exitingletRow, enteringletCol);
-    // console.log('moving on!');
-    // cols = findSolutionCols(tableau);
-    // if (count === 15) {
-    //   printTableau(tableau, 'next.txt');
-    //   // console.log(cols);
-    //   break;
-    // }
+  // console.log('count: ', count);
+  // if (count === 15) {
+  //   printTableau(tableau, 'previous.txt');
+  //   // console.log(cols);
+  // }
+  let enteringletCol = enteringCol(tableau);
+  // console.log('entering col: ', enteringletCol);
+  if (! enteringletCol) {
+    // printTableau(tableau, 'next.txt');
+    // console.log('Optimal solution found! Iterations: ', count);
+    return tableau;
+  }
+  let exitingletRow = exitingRow(tableau, enteringletCol);
+  // console.log('exiting row: ', exitingletRow);
+  if (! exitingletRow) {
+    // printTableau(tableau, 'next.txt');
+    console.log('Problem unbounded from above!');
+    return;
+  }
+  tableau = rowReducer(tableau, exitingletRow, enteringletCol);
+  // console.log('moving on!');
+  // cols = findSolutionCols(tableau);
+  // if (count === 15) {
+  //   printTableau(tableau, 'next.txt');
+  //   // console.log(cols);
+  //   break;
+  // }
 
   // }
   return simplexSolver(tableau);
@@ -304,6 +304,9 @@ function tableauTemplate (obj) {
   // cols: Z + all the x's + all the s's + 1 a + RHS = 1 + x.length + 1 (s for salary constraint) + x.length (s's for x's) + 1 + 1
 
   // create the rows
+
+  // ** We could really get rid of this.
+
   let tableau = new Array(obj.length + 3);
 
   for (let i = 0; i < tableau.length; i++) {
@@ -315,6 +318,7 @@ function tableauTemplate (obj) {
   return tableau;
 }
 function printTableau (tableau, file) {
+  // ***** Not using
   let str = '';
   for (let i = 0; i < tableau.length; i++) {
     let rowStr = ''

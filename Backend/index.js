@@ -4,4 +4,3 @@ db.sync({force: false})
 .then(vals => {
     console.log('db has been synced!');
   });
-});

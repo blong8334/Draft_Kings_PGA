@@ -1,18 +1,23 @@
 const db = require('./_db');
-const Player_Table = require('./models/player-model');
+// const Player_Table = require('./models/player-model');
 const DK_Table = require('./models/dk-lineup-model');
 const Curr_Tourn = require('./models/curr-tourn-model');
-const Players_Seasons_Stats = require('./models/seasons-stats');
+// const Players_Seasons_Stats = require('./models/seasons-stats');
 const Weekly_Field_Stats = require('./models/weekly_stats');
 const Players_Stats_Per_Tournament = require('./models/player_stats_per_tournament');
+const Tournament_Results = require('./models/tournament_results');
+const Course_Info = require('./models/course_info');
 
 DK_Table.belongsTo(Curr_Tourn);
 
 module.exports = {
   db,
-  Player_Table,
-  DK_Table, Curr_Tourn,
-  Players_Seasons_Stats,
+  // Player_Table,
+  DK_Table,
+  Curr_Tourn,
+  // Players_Seasons_Stats,
   Weekly_Field_Stats,
-  Players_Stats_Per_Tournament
+  Players_Stats_Per_Tournament,
+  Tournament_Results,
+  Course_Info
  };
