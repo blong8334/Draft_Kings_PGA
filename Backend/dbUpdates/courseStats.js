@@ -32,11 +32,10 @@ function getCourseStatsFromPGA (tourn_id) {
 }
 // %^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^
 
-getScoreCardsFromDB(tourn_id);
+// getScoreCardsFromDB(tourn_id);
 // getScoreCardsFromPGA(tourn_id);
 
 function getScoreCardsFromDB (tourn_id) {
-
   return Tournament_Results.findAll({where: {tourn_id}})
   .then(res => {
     return res.map(player => {
@@ -93,15 +92,14 @@ function rankAndScoreFinishing (res) {
   res.sort((a, b) => {
     if (a.rounds < b.rounds) {
       return 1;
-    } if (a.rounds == b.rounds) {
+    } else if (a.rounds == b.rounds) {
       return a.strokes - b.strokes;
-    } else return -1;
-  })
+    } return -1;
+  });
   res.forEach((player, idx) => {
     if (res[idx-1] && res[idx-1].strokes === player.strokes) player.pos = res[idx-1].pos
     else player.pos = idx + 1;
     if (player.pos <= 50) finishPoints(player);
-    console.log(player);
   });
   return res;
 }
