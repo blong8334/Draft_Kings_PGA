@@ -2,9 +2,8 @@ const Sequelize = require('sequelize');
 const db = require('../_db');
 
 const Tournament_Results = db.define('tournament_results', {
-  name: {
-    type: Sequelize.STRING,
-    allowNull: false
+  player_name: {
+    type: Sequelize.STRING
   },
   pga_id: {
     type: Sequelize.STRING
