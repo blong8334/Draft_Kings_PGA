@@ -11,7 +11,7 @@ const Tournament_Results = db.define('tournament_results', {
   score_cards: {
     type: Sequelize.JSON
   },
-  place: {
+  dk_points: {
     type: Sequelize.STRING
   },
   tourn_id: {
