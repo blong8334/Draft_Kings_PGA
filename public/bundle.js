@@ -29046,8 +29046,8 @@
 	
 	var loadPlayersFromServer = exports.loadPlayersFromServer = function loadPlayersFromServer() {
 	  return function (dispatch) {
-	    _axios2.default.get('/currentField').then(function (res) {
-	      dispatch(updateField(res.data));
+	    return _axios2.default.get('/currentField').then(function (res) {
+	      return dispatch(updateField(res.data));
 	    }).catch(function (err) {
 	      return console.error(err);
 	    });

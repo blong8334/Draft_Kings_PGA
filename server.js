@@ -26,43 +26,31 @@ app.post('/branchAndBound', (req, res, next) => {
   let best = getBestLineup(zscoreArr, salaryCap, players);
   res.json(best);
 });
+
 app.post('/getZscores', (req, res, next) => {
-  let stats = req.body.stats;
-  let field = req.body.field;
-  let zscores = getPlayerZscores(stats, field);
+  let zscores = getPlayerZscores(req.body.stats, req.body.field);
   res.json(zscores);
 });
 
+const tourn_id = '003';
+
 app.get('/currentField', function (req, res) {
-  get_all_stats_for_current_field()
-    .then(players => {
-      res.json(players);
-    })
+  get_all_stats_for_current_field(tourn_id)
+    .then(players => res.json(players))
     .catch(err => console.error(err));
 });
 
 app.post('/combineStats', (req, res, next) => {
-  let stats = req.body.stats;
-  // boil down all stats to one
-  let newStats = reduce_all_stats_to_one(stats);
-
+  let newStats = reduce_all_stats_to_one(req.body.stats);
   res.json(newStats);
-
 });
-
 
 app.post('/reduceStats', (req, res, next) => {
-  let field = req.body.field;
-  let weeks = req.body.weeks;
-  // need to reduce the received stats into the weeks we receive.
-  let x = stats_for_last_x_weeks_with_analysis(field, weeks);
-
+  let x = stats_for_last_x_weeks_with_analysis(req.body.field, req.body.weeks);
   res.json(x);
-
 });
-app.get('/*', function (request, response){
-  response.sendFile(path.resolve('./index.html'));
-})
+
+app.get('/*', (req, res) => res.sendFile(path.resolve('./index.html')));
 
 
 app.listen(3000, function () {

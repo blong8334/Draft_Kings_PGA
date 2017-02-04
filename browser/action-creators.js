@@ -110,22 +110,15 @@ export const addToLineup = (player) => {
 //******************************************************************************
 export const UPDATE_FIELD = 'UPDATE_FIELD';
 
-export const updateField = (players) => {
-  return {
-    type: UPDATE_FIELD,
-    field: players
-  }
-}
+export const updateField = (players) => ({
+  type: UPDATE_FIELD,
+  field: players
+});
 
-export const loadPlayersFromServer = () => {
-  return (dispatch) => {
-    axios.get('/currentField')
-    .then(res => {
-      dispatch(updateField(res.data));
-    })
-    .catch(err => console.error(err));
-  }
-}
+export const loadPlayersFromServer = () => dispatch => 
+axios.get('/currentField')
+.then(res => dispatch(updateField(res.data)))
+.catch(err => console.error(err));
 //******************************************************************************
 export const SET_CURRENT_PLAYER = 'SET_CURRENT_PLAYER';
 
