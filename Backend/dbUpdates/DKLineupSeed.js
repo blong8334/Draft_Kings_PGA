@@ -3,7 +3,7 @@ const { db, DK_Table, Curr_Tourn } = require('../data_base/index');
 const req_prom = require('request-promise');
 const FuzzySet = require('fuzzyset.js');
 
-const tourn_id = '004';
+const tourn_id = '003';
 
 fs.readFile(`/Users/brianlong/Documents/DK_Salaries/DKSalaries${tourn_id}.csv`, (err, data) => {
   if (err) throw err;
