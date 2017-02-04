@@ -1,39 +1,14 @@
-const { Course_Info, Tournament_Results, db } = require('../data_base/index');
+const { Tournament_Results, db } = require('../data_base/index');
 const req_prom = require('request-promise');
 const Promise = require('bluebird');
-// in the db lets have a course stats
 
-// => course stats.
-// => player scorecards.
-// => leaderboard.
+const tourn_id = '004';
 
-
-let tourn_id = '002';
-
-// getCourseStatsFromDB(tourn_id)
-// .then(res => {
-//   res.forEach(course => {
-//     console.log(course);
-//   });
-// });
-// getCourseStatsFromPga(tourn_id);
-
-// TWINS %^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^
-function getCourseStatsFromDB (tourn_id) {
-  return Course_Info.find({where: {tourn_id}})
-  .then(res => JSON.parse(res.info).courses)
-  .catch(err => console.error(err));
-}
-function getCourseStatsFromPGA (tourn_id) {
-  return req_prom(`http://www.pgatour.com/data/r/${tourn_id}/coursestat.json`)
-  .then(res => Course_Info.create({tourn_id, info: res}))
-  .then(res => console.log("Success :)"))
-  .catch(err => console.error(err));
-}
 // %^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^
-
-// getScoreCardsFromDB(tourn_id);
-// getScoreCardsFromPGA(tourn_id);
+getScoreCardsFromPGA(tourn_id)
+.then(res => getScoreCardsFromDB(tourn_id))
+.catch(err => console.error(err));
+// %^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^
 
 function getScoreCardsFromDB (tourn_id) {
   return Tournament_Results.findAll({where: {tourn_id}})
@@ -138,9 +113,4 @@ function getScoreCardsFromPGA (tourn_id) {
   .then(res => Tournament_Results.bulkCreate(res))
   .then(res => console.log('Success :)'))
   .catch(err => console.error(err.message));
-}
-
-// %^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^
-function getLeaderBoard (tourn_id) {
-  let url = `/data/r/{tourn_id}/{year}/leaderboard-v2.json`;
 }

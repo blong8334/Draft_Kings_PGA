@@ -4,9 +4,6 @@ const Curr_Tourn = require('./models/curr-tourn-model');
 const Weekly_Field_Stats = require('./models/weekly_stats');
 const Players_Stats_Per_Tournament = require('./models/player_stats_per_tournament');
 const Tournament_Results = require('./models/tournament_results');
-const Course_Info = require('./models/course_info');
-
-DK_Table.belongsTo(Curr_Tourn);
 
 module.exports = {
   db,
@@ -14,6 +11,5 @@ module.exports = {
   Curr_Tourn,
   Weekly_Field_Stats,
   Players_Stats_Per_Tournament,
-  Tournament_Results,
-  Course_Info
+  Tournament_Results
  };

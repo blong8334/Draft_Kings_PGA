@@ -9,9 +9,8 @@ const Curr_Tourn = db.define('curr_tourn', {
   pga_id: {
     type: Sequelize.STRING
   },
-  sorted_name: {
-    type: Sequelize.STRING,
-    unique: true
+  tourn_id: {
+    type:Sequelize.STRING
   }
 });
 

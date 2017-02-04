@@ -52,14 +52,14 @@ let simplexer = function(res, cap, totalPlayerCount) {
   // console.log(findSolutionCols(result));
   let sol = findSolutionCols(result);
   // console.log('sol: ', sol);
-  let zScore = printWinners(result, sol, res);
+  let zScore = printWinners(result, sol, res, totalPlayerCount);
   // printTableau(result, 'previous.txt');
   return zScore;
 }
-function printWinners (result, sol, res) {
+function printWinners (result, sol, res, totalPlayerCount) {
   let sal = 0;
   let totalZScore = 0;
-  // console.log('sol ', res);
+  if (sol.length === totalPlayerCount) console.log("Found optimal.");
   for (let i = 1; i < sol.length; i++) {
     let curr = sol[i];
     if (curr[1] > res.length) {

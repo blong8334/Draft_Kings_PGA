@@ -1,10 +1,6 @@
 const { Weekly_Field_Stats, Players_Stats_Per_Tournament } = require('../data_base/index');
 const request_promise = require('request-promise');
 
-// WE USE THIS ONE
-
-// USE THIS ONE BEFORE UPDATE_WEEKLY...
-
 // NOTE: The point of this file is to pull the tournament results
 // from the pga site for the previous week's tournament and add them to the db.  both the
 // weekly stats table and the player stats per tournament table.
@@ -21,28 +17,23 @@ const request_promise = require('request-promise');
 // NOTE: this is the id of the tournament for the current week.
 // you update this.
 // _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
-const id = '002';
+const id = '004';
 
 // NOTE: this is the date of the tournament.
 // you update this.
 // **** months  go from 0 - 11 ****
 // NOTE: we enter the date the tournament began.
 // _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
-const date = new Date(2017, 0, 19);
+const date = new Date(2017, 0, 26);
 
 // NOTE: this runs the main function.
 controller(id, date);
 
 function controller (id, date) {
   create_tournament_results_by_id(id)
-    .then(res => {
-      return find_tournament_by_id_AND_return_stats(id)
-    })
-    .then(res => {
-      create_player_stats_entries_for_tournament(res, date);
-    })
-    .catch(err => console.error('Something happened'));
-
+    .then(res => find_tournament_by_id_AND_return_stats(id))
+    .then(res => create_player_stats_entries_for_tournament(res, date))
+    .catch(err => console.error(err));
 }
 
 function create_player_stats_entries_for_tournament (arr, date) {
@@ -53,16 +44,13 @@ function create_player_stats_entries_for_tournament (arr, date) {
 // stats for which no data exists.  once we are done doing so we
 // create a new entry in the Players_Stats_Per_Tournament table.
 
-  let tournament = JSON.parse(arr.stats).tournament;
-// NOTE: this is tournament object.
-
-  let tournament_id = tournament.tournamentNumber;
+  let tournament_id = JSON.parse(arr.stats).tournament.tournamentNumber;
 
   let tourn_begin_date = date;
 // NOTE: we want to keep track of the tournament date
 // so we are able to consider stats from the past X weeks.
 
-  let players = tournament.players;
+  let players = JSON.parse(arr.stats).tournament.players;
 // NOTE: players is an array of objects of each player.
 
   for (let i = 0; i < players.length; i++) {
@@ -73,9 +61,7 @@ function create_player_stats_entries_for_tournament (arr, date) {
 
 // NOTE: get rid of any stats that dont have data.
     let non_empty_stats = stats.filter(stat => {
-      if (stat.tValue) {
-        return true;
-      }
+      if (stat.tValue) return true;
       return false;
     });
 
@@ -96,13 +82,8 @@ function create_player_stats_entries_for_tournament (arr, date) {
 
 function find_tournament_by_id_AND_return_stats (tournament_id) {
 // NOTE: this function returns all the data for the specific tournament_id
-
-  return Weekly_Field_Stats.findOne({
-    where: {tournament_id}
-  })
-  .then(res => {
-    return res.dataValues;
-  })
+  return Weekly_Field_Stats.findOne({where: {tournament_id}})
+  .then(res => res.dataValues)
   .catch(err => console.error('Something wrong in find_tournament_by_id_AND_return_stats'));
 }
 
