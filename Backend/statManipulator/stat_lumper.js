@@ -1,92 +1,12 @@
 const { get_stats_for_last_x_weeks } = require('./contest_player_list_with_all_stats');
 
-
-function stats_for_last_x_weeks_with_analysis (field, weeks) {
-  let arr = get_stats_for_last_x_weeks(field, weeks);
-  arr = analyze_stats(arr);
-  return arr;
-}
-
-function analyze_stats (field) {
-  // this functino will return an obj with the statId as the key:
-  // the properties will be an object as follows:
-  // {
-  //   statName: ,
-  //   players_with_this_stat: ,
-  //   pct_of_field:
-  // }
-
-  // players_with_this_stat will be an object with the player id
-  // as the key and the properties will be the tournament_id for which the player
-  // has this stat, and will incliude their actual stats so we can use them later.
-
-  // need to loop through each player in field.
-  // then loop through each stat array in stats.
-  // for each stat check if it exists in the main
-  let total_players_in_field = field.length;
-  let stat_obj = {};
-
-  // NOTE: loop through each player in the field.
-  field.forEach(player => {
-    // NOTE: now loop through all the stats for this player.
-
-    player.stats.forEach(stat => {
-      // NOTE: check if the statId exists in the main stat_obj.
-      // stat has tournament_id, date and a stats array
-      stat.stats.forEach(indStat => {
-
-        indStat.tourn_id = stat.tournament_id;
-
-        if (! stat_obj[indStat.statId]) {
-
-          let players_with_this_stat_obj = {};
-          players_with_this_stat_obj[player.pga_id] = [indStat];
-
-          stat_obj[indStat.statId] = {
-            stat_name: indStat.name,
-            players_with_this_stat: players_with_this_stat_obj,
-            total_in_field: 1
-          }
-        } else {
-          let x = stat_obj[indStat.statId].players_with_this_stat[player.pga_id];
-          if (x) {
-            x.push(indStat);
-          } else {
-            stat_obj[indStat.statId].players_with_this_stat[player.pga_id] = [indStat];
-            stat_obj[indStat.statId].total_in_field ++;
-          }
-        }
-      })
-    })
-  })
-  return stat_obj;
-}
-
 function reduce_all_stats_to_one (arr) {
 
-  // NOTE: the purpose of this function is to receive an array of stats
-  // to group together into one for each player because players may have more than
-  // one stat considering the multiple tourn selection.
-
-  // arr will be an array of objects of the form:
-  // { stat_name: 'SG: Total',
-  // players_with_this_stat:
-  //  { '12510': [Object],
-  //    '12716': [Object],
-  //    '19846': [Object],
-  //  '01320': [Object] },
-  // total_in_field: 113 } ]
-
-  // console.log(arr);
-
   arr.forEach((statGroup, index) => {
-    // NOTE: this is the individual stat group.
 
-    // NOTE: these are the keys.
-    let stat_name = statGroup.stat_name;
-    console.log('STAT NAME: ', stat_name);
-    let total_in_field = statGroup.total_in_field;
-    let player_stat = statGroup.players_with_this_stat;
+    let stat_name = statGroup.stat_name,
+    total_in_field = statGroup.total_in_field,
+    player_stat = statGroup.players_with_this_stat;
 
     for (let pga_id in player_stat) {
       // If the players has more than one tournament, we need to combine the stats.
@@ -241,8 +161,8 @@ function totalChecker (rounds) {
       console.log('round.rValue ',round.rValue);
       totalRounds ++;
       total += parseFloat(round.rValue);
-    })
-  })
+    });
+  });
   console.log(tournamentValue, total);
   let calcDifference = tournamentValue - total;
   console.log('CALC DIFFERENCE: ', calcDifference);
@@ -258,17 +178,13 @@ function totalChecker (rounds) {
 }
 
 function pctCalculator (rounds) {
-
-  let numerator = 0;
-  let denominator = 0;
-
-  let toReturn = {
+  let numerator = 0, denominator = 0,
+  toReturn = {
     statId: rounds[0].statId,
     name: rounds[0].name, // NOTE: this is the stat name.
     tValue: '', // NOTE: we are building tValue from the numbers for all the rounds.
     rank: [], // NOTE: rank is an array of all the rounds that went into the calculation.
-  }
-
+  };
   rounds.forEach(round => {
     let guy = round.cValue.split('/');
     numerator += +guy[0];
@@ -281,11 +197,7 @@ function pctCalculator (rounds) {
   })
   let final = numerator / denominator;
   toReturn.tValue = final * 100;
-  // console.log(toReturn);
   return toReturn;
 }
 
-module.exports = {
-  stats_for_last_x_weeks_with_analysis,
-  reduce_all_stats_to_one
-};
+module.exports = {reduce_all_stats_to_one};
